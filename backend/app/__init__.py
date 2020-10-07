@@ -6,14 +6,31 @@ from flask_migrate import Migrate
 
 from .models import db, User
 from .api.user_routes import user_routes
+from .api.session import session, login_manager
 
 from .config import Config
+
+# csrf = CSRFProtect()
 
 app = Flask(__name__)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
+app.register_blueprint(session, url_prefix='/api/session')
+# csrf.init_app(app) #apply csrf protection to entirety of app?
 db.init_app(app)
+login_manager.init_app(app)
+login_manager.login_view = 'session.login'
 Migrate(app, db)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+  print('---------load user fired')
+  if user_id is not None:
+    print(f'--------- id {user_id}')
+    return User.query.get(int(user_id))
+  print(f'------- no valid user_id')
+  return None
 
 ## Application Security
 CORS(app)
