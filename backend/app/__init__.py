@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from .models import db, User
 from .api.user_routes import user_routes
 from .api.session import session, login_manager
+from .api.campaigns import campaigns
 
 from .config import Config
 
@@ -16,6 +17,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(session, url_prefix='/api/session')
+app.register_blueprint(campaigns, url_prefix='/api/campaigns')
 # csrf.init_app(app) #apply csrf protection to entirety of app?
 db.init_app(app)
 login_manager.init_app(app)

@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Switch, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ProtectedRoute, AuthRoute } from './components/utils/Routes';
-import CampaignsPage from './components/campaigns/CampaignsPage';
 
 import { CssBaseline } from '@material-ui/core';
 import Navbar from './components/navbar/Navbar';
-import WelcomePage from './components/welcomepage/WelcomePage';
 import { setUser } from './store/auth';
 import { setCampaigns } from './store/campaigns';
+import CustomSwitch from './CustomSwitch';
 
 
 function App() {
@@ -24,7 +22,7 @@ function App() {
             }
         }
         setCSRF();
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -38,7 +36,7 @@ function App() {
             }
         }
         loadUser();
-    }, []);
+    }, [dispatch]);
 
     const currentUserId = useSelector(state => state.auth.id)
     return (
@@ -46,11 +44,7 @@ function App() {
             <CssBaseline />
             <BrowserRouter>
                 <Navbar />
-                <Switch>
-                    <ProtectedRoute path='/users/:userId/campaigns' exact component={CampaignsPage} currentUserId={currentUserId} />
-                    <AuthRoute path='/welcome' exact component={WelcomePage} currentUserId={currentUserId} />
-                    <AuthRoute path='/' exact component={WelcomePage} currentUserId={currentUserId} />
-                </Switch>
+                <CustomSwitch userId={currentUserId} />
             </BrowserRouter>
         </>
     );

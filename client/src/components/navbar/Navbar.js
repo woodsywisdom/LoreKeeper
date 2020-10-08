@@ -17,6 +17,11 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
+  const logoClick = e => {
+    e.preventDefault();
+    window.location = '/'
+  }
+
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(login('Ian', 'password'));
@@ -31,7 +36,7 @@ const Navbar = () => {
     <>
       <AppBar position='static' >
         <Toolbar display='flex' variant="dense" className={classes.toolbar} >
-          <Box>
+          <Box onClick={logoClick} >
             <Typography variant='button'>LoreKeeper</Typography>
           </Box>
           <Box>

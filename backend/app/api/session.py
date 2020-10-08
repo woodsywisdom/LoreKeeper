@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, url_for, request, redirect, make_response
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from flask_login import LoginManager, current_user, login_user, logout_user
 from werkzeug.datastructures import MultiDict
 from flask_wtf.csrf import generate_csrf
+
 from app.models import User, db
 from app.forms import LoginForm, SignupForm
-
 
 login_manager = LoginManager()
 
@@ -28,18 +28,17 @@ def login():
     return jsonify({'errors': 'no request data'})
   if form.validate():
     user = User.query.filter(User.username == data["username"]).first()
-    print(f"________________user to be logged in: {user}")
+    # print(f"________________user to be logged in: {user}")
     if user and user.check_password(data['password']):
       formatted_user = format_user(user)
       # print(f'********{format_user}')
-      # format_user['campaigns'] = [ campaign.id for campaign in format_user['campaigns'] ]
       login_user(user)
-      print('_____user logged in_____')
+      # print('_____user logged in_____')
       # print(f'*********{format_user}')
     return formatted_user
   else:
     res = make_response({ "errors": [form.errors[error][0] for error in form.errors]}, 401)
-    return res
+    return jsonify(res)
 
 @session.route('/logout/')
 def logout():
