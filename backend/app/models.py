@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
   hashed_password = db.Column(db.String(200), nullable = False)
 
   campaigns = db.relationship('Campaign', backref='user')
+  # tags = db.relationship('Tag', backref='user')
 
   def to_dict(self):
     return {
@@ -52,7 +53,7 @@ class Campaign(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-  tags = db.relationship('Tag', backref='campaign')
+  tags = db.relationship('Tag', order_by='Tag.name', backref='campaign')
 
   def to_dict(self):
     return {
@@ -71,25 +72,30 @@ class Category(db.Model):
   name = db.Column(db.String(25), nullable=False)
   description = db.Column(db.String(255), nullable=False)
 
-  tags = db.relationship('Tag', backref='category')
+  tags = db.relationship('Tag', lazy='subquery', backref='category')
 
   def to_dict(self):
     return {
       "id": self.id,
       "name": self.name,
       "description": self.description,
-      "tags": self.tags,
+      # "tags": [ tag.id for tag in self.tags ],
     }
+
+  # def current_tags(self, user_id):
+  #   return
 
 class Tag(db.Model):
   __tablename__ = 'tags'
 
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(25), nullable=False)
+
   campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
   category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
+  # user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-  notes = db.relationship('Note', secondary=notes_tags, backref='tags')
+  notes = db.relationship('Note', order_by='Note.created_at', secondary=notes_tags, backref='tags')
 
   def to_dict(self):
     return {
@@ -97,7 +103,7 @@ class Tag(db.Model):
       "name": self.name,
       "campaign_id": self.campaign_id,
       "category_id": self.category_id,
-      "notes": self.notes
+      "notes": [ note.id for note in self.notes ],
     }
 
 class Note(db.Model):
@@ -114,5 +120,5 @@ class Note(db.Model):
       "id": self.id,
       "content": self.content,
       "created_at": self.created_at,
-      "tags": self.tags,
+      "tags": [ tag.id for tag in self.tags ],
     }

@@ -1,17 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { newCampaign } from '../../store/campaigns';
 
-import { TextField, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
+import { TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@material-ui/core';
 
 
-const CampaignForm = () => {
+const CampaignForm = ({ open }) => {
 
   const dispatch = useDispatch();
 
   const currentUserId = useSelector(state => state.auth.id);
-  const [ title, setTitle ] = useState('');
-  const [ description, setDescription ] = useState('');
+  const [formOpen, setFormOpen] = useState(open);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  useEffect(() => {
+    setFormOpen(open);
+  }, [dispatch, open]);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    setFormOpen(!formOpen);
+  }
 
   const changeTitle = (e) => {
     e.preventDefault();
@@ -30,7 +40,11 @@ const CampaignForm = () => {
 
   return (
     <>
-      <DialogTitle>Create a new Campaign</DialogTitle>
+      <Dialog
+        open={formOpen}
+        onClose={handleClick}
+      >
+        <DialogTitle>Create a new Campaign</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -52,6 +66,7 @@ const CampaignForm = () => {
             <Button onClick={handleSubmit} color="primary">Add Campaign</Button>
           </DialogActions>
         </DialogContent>
+      </Dialog>
     </>
   );
 }

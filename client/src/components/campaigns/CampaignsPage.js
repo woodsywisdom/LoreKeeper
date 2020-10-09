@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Container, Grid, Card, Typography, List, ListItem, ListItemText, ListItemIcon, Dialog, DialogTitle } from '@material-ui/core';
+import { Container, Grid, Card, Typography, List, ListItem, ListItemText, ListItemIcon, Dialog } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 
 const CampaignsPage = () => {
 
-  const campaigns = useSelector(state => state.campaigns);
+  const campaigns = useSelector(state => state.entities.campaigns);
   const classes = useStyles();
 
   const [formOpen, setFormOpen] = useState(false);
@@ -31,18 +31,14 @@ const CampaignsPage = () => {
     setFormOpen(!formOpen);
   }
 
+
   return (
     <>
-      <Dialog
-        open={formOpen}
-        onClose={handleClick}
-      >
-        <CampaignForm />
-      </Dialog>
+      <CampaignForm open={formOpen} />
       <Container>
         <Typography className={classes.yourCampaignsHeader} variant='h4'>Your Campaigns</Typography>
         <Grid container spacing={3} >
-          {campaigns.map(campaign => {
+          {campaigns ? campaigns.map(campaign => {
             return (
               <CampaignCard
                 key={campaign.id}
@@ -51,7 +47,7 @@ const CampaignsPage = () => {
                 description={campaign.description}
               />
             );
-          })}
+          }) : <></>}
           <Grid item xs={4}>
             <Card
               onClick={handleClick}

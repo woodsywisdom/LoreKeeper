@@ -7,11 +7,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   toolbar: {
     justifyContent: "space-between",
-  }
-});
+  },
+  appBar: {
+    height: "6vh",
+    zIndex: theme.zIndex.drawer + 1,
+  },
+}));
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -34,7 +38,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position='static' >
+      <AppBar className={classes.appBar} position='fixed' >
         <Toolbar display='flex' variant="dense" className={classes.toolbar} >
           <Box onClick={logoClick} >
             <Typography variant='button'>LoreKeeper</Typography>

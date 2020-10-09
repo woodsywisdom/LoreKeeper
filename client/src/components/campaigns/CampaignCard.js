@@ -18,7 +18,7 @@ const CampaignCard = (props) => {
 
   const handleClick = (e) => {
     e.preventDefault();
-    window.location = `/campaigns/${e.target.id}`
+    window.location = `/campaigns/${e.currentTarget.id}`
   }
 
   return (

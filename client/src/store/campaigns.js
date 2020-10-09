@@ -1,5 +1,8 @@
 import Cookies from 'js-cookie';
 
+// import setCategories from './categories';
+// import setTags from './tags';
+
 const SET_CAMPAIGNS = 'campaigns/SET_CAMPAIGNS';
 const ADD_CAMPAIGN = 'campaigns/ADD_CAMPAIGN';
 
@@ -18,8 +21,9 @@ export const addCampaign = campaign => {
   });
 }
 
-export const newCampaign = (title, description, userId) => async dispatch => {
+export const newCampaign = (title, description) => async dispatch => {
   const csrf_token = Cookies.get('XSRF-TOKEN');
+
   const res = await fetch('/api/campaigns/', {
     method: 'post',
     headers: {
@@ -28,10 +32,9 @@ export const newCampaign = (title, description, userId) => async dispatch => {
     },
     body: JSON.stringify({ title, description, 'csrf_token': csrf_token }),
   });
-  const data = res.json();
-  const campaign = data.campaign;
+  const data = await res.json();
   if (res.ok && !data['errors']) {
-    dispatch(addCampaign(campaign));
+    dispatch(addCampaign(data));
   } else {
     res.errors = data.errors
   }

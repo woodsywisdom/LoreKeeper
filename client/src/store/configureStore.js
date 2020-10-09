@@ -2,10 +2,18 @@ import { createStore, compose, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import auth from './auth';
 import campaigns from './campaigns';
+import categories from './categories';
+import tags from './tags';
+
+const entities = combineReducers({
+  campaigns,
+  categories,
+  tags,
+})
 
 const rootReducer = combineReducers({
   auth,
-  campaigns,
+  entities,
 });
 
 let storeEnhancer;

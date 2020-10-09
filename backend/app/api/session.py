@@ -25,7 +25,7 @@ def login():
   form = LoginForm(MultiDict(mapping = data))
   # print(f"form-data: {form.data}")
   if not data:
-    return jsonify({'errors': 'no request data'})
+    return jsonify({'errors': ['no request data']})
   if form.validate():
     user = User.query.filter(User.username == data["username"]).first()
     # print(f"________________user to be logged in: {user}")
