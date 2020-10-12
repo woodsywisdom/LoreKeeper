@@ -4,16 +4,20 @@ import auth from './auth';
 import campaigns from './campaigns';
 import categories from './categories';
 import tags from './tags';
+import notes from './notes';
+import ui from './ui';
 
 const entities = combineReducers({
   campaigns,
   categories,
   tags,
-})
+  notes,
+});
 
 const rootReducer = combineReducers({
   auth,
   entities,
+  ui,
 });
 
 let storeEnhancer;

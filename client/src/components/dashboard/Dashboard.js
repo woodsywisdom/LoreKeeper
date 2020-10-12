@@ -1,17 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Card, Drawer, Grid, List, ListItem, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActions, CardContent, Drawer, Grid, List, ListItem, TextField, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CategoryTags from './CategoryTags';
+import CorkBoard from './CorkBoard';
 import { setCategories } from '../../store/categories';
 import { setTags } from '../../store/tags';
+import { createNote } from '../../store/notes';
+import { setCurrentSession, pinTag } from '../../store/ui';
 
 const useStyles = makeStyles({
   dashboardBox: {
     display: 'flex',
-    paddingTop: "50px",
+    height: '100vh',
+    paddingTop: '6vh',
   },
   categoryList: {
     paddingTop: "50px",
@@ -22,21 +26,61 @@ const useStyles = makeStyles({
   },
   content: {
     flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column',
   },
   corkBoard: {
-    height: "70vh",
-
+    flexGrow: 1,
+  },
+  notePadContainer: {
+    width: "100%",
+    height: "200px",
+    padding: '8px',
   },
   notePad: {
-    width: "100%",
-    height: "24vh",
+    height: "100%",
   },
+  noteField: {
+    width: '100%',
+  }
 });
 
 const Dashboard = (props) => {
   const campaignId = props.match.params.id
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  const categories = useSelector(state => state.entities.categories);
+  const tags = useSelector(state => state.entities.tags)
+  const currentSession = useSelector(state => state.ui.currentSession);
+  const [newNoteContent, setNewNoteContent] = useState("");
+
+  const noteChange = (e) => {
+    e.preventDefault();
+    setNewNoteContent(e.currentTarget.value);
+  }
+
+  const noteSubmit = async (e) => {
+    e.preventDefault();
+    const words = newNoteContent.split(' ');
+    const hashtags = words.filter(word => word.startsWith('#'));
+    let hashtagIds = [];
+    let newHashtags = [];
+    hashtags.forEach(hashtag => {
+      hashtag = (hashtag.replace(/[.,\/!$%\^&\*;:{}=`~()]/g,"")).toLowerCase();
+      if (!(hashtag in tags)) {
+        newHashtags.push(hashtag);
+      } else {
+        hashtagIds.push(tags[hashtag].id);
+      }
+    });
+    const newNote = dispatch(createNote(newNoteContent, hashtagIds, campaignId, newHashtags));
+
+    if ('errors' in newNote) {
+      //add error handling
+      return
+    }
+  }
 
   useEffect(() => {
     const loadData = async () => {
@@ -45,6 +89,11 @@ const Dashboard = (props) => {
         const data = await res.json();
         dispatch(setCategories(data.categories));
         dispatch(setTags(data.tags));
+        const sessions = Object.values(data.tags).filter(tag => tag.category_id === 2);
+        const lastSession = sessions[sessions.length - 1];
+        dispatch(setCurrentSession(lastSession));
+        dispatch(pinTag(lastSession));
+        setNewNoteContent(lastSession.name);
       }
     }
     loadData();
@@ -59,13 +108,11 @@ const Dashboard = (props) => {
           <Typography>{category.name}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <CategoryTags catId={category.id} />
+          <CategoryTags catId={category.id} tagIds={category.tags} />
         </AccordionDetails>
       </Accordion>
     )
   }
-
-  const categories = useSelector(state => state.entities.categories);
 
   return (
     <Box className={classes.dashboardBox} >
@@ -75,15 +122,31 @@ const Dashboard = (props) => {
         </List>
       </Drawer>
       <Box className={classes.content} >
-          <Box className={classes.corkBoard} >
-            <h1>Campaign {campaignId} Dashboard</h1>
-
-          </Box>
-          <Box className={classes.notePad} >
-            <Card >
-              <Typography>The notepad will go here</Typography>
-            </Card>
-          </Box>
+        <Box className={classes.corkBoard} >
+          <CorkBoard />
+        </Box>
+        <Box className={classes.notePadContainer} >
+          <Card className={classes.notePad}>
+            <CardContent>
+              {/* <Typography>The notepad will go here</Typography> */}
+              <TextField
+                className={classes.noteField}
+                label='Note contents.  Use "#" at the start of any tags you want to add'
+                multiline
+                rows={4}
+                variant='outlined'
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                defaultValue={currentSession ? currentSession.name : ''}
+                onChange={noteChange}
+              />
+            </CardContent>
+            <CardActions>
+              <Button onClick={noteSubmit} >Submit</Button>
+            </CardActions>
+          </Card>
+        </Box>
       </Box>
     </Box>
   );

@@ -9,7 +9,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles(theme => ({
   toolbar: {
+    height: "6vh",
     justifyContent: "space-between",
+    alignItems: 'center',
   },
   appBar: {
     height: "6vh",

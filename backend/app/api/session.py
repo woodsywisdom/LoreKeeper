@@ -55,5 +55,7 @@ def csrf():
 
 @session.route('/current-user/')
 def currentuser():
-  print(f'{current_user.username} is still logged in')
+  print(f'_______{dir(current_user)}')
+  if current_user.is_anonymous:
+    return make_response({ 'errors': ['anonymous user is logged in']}, 401 )
   return format_user(current_user)

@@ -62,7 +62,7 @@ class Campaign(db.Model):
       "description": self.description,
       "user_id": self.user_id,
       "created_at": self.created_at,
-      "tags": [ tag.id for tag in self.tags ],
+      "tags": [ tag.name for tag in self.tags ],
     }
 
 class Category(db.Model):
@@ -90,12 +90,11 @@ class Tag(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(25), nullable=False)
-
   campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
   category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
   # user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-  notes = db.relationship('Note', order_by='Note.created_at', secondary=notes_tags, backref='tags')
+  # notes = db.relationship('Note', order_by='Note.created_at', secondary=notes_tags, backref='tags')
 
   def to_dict(self):
     return {
@@ -113,7 +112,7 @@ class Note(db.Model):
   content = db.Column(db.String(255), nullable=False)
   created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-  # tags = db.relationship('Tag', secondary=notes_tags, backref='notes')
+  tags = db.relationship('Tag', secondary=notes_tags, backref='notes')
 
   def to_dict(self):
     return {

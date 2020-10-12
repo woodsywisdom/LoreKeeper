@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { CssBaseline } from '@material-ui/core';
+import { Box, CssBaseline } from '@material-ui/core';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import Navbar from './components/navbar/Navbar';
@@ -13,13 +13,12 @@ import WelcomePage from './components/welcomepage/WelcomePage';
 
 const darkTheme = createMuiTheme({
     palette: {
-      type: 'dark',
+        type: 'dark',
     },
-  });
+});
 
 
 function App() {
-    console.log("____Rendering app_____");
 
     const dispatch = useDispatch();
 
@@ -38,14 +37,14 @@ function App() {
     useEffect(() => {
         const loadUser = async () => {
             const res = await fetch('/api/session/current-user/');
-            if (res.ok) {
+            if (res.ok && !res.errors) {
                 const user = await res.json();
                 const campaigns = user.campaigns;
                 dispatch(setCampaigns(campaigns));
                 delete user.campaigns;
                 dispatch(setUser(user));
-                setLoading(false);
             }
+            setLoading(false);
         }
         loadUser();
     }, [dispatch]);

@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from sqlalchemy.orm import subqueryload
 # from werkzeug.datastructures import MultiDict
 
-from app.models import Campaign, Category, Note, db
+from app.models import Campaign, Category, Note, Tag, db
 from app.forms import CampaignForm
 
 campaigns = Blueprint('campaigns', __name__)
@@ -19,18 +19,57 @@ def load_campaign(current_campaign_id):
     formatted_cats = [ cat.to_dict() for cat in categories ]
     # tags_by_cat = { category.id:category.tags for category in categories }
 
-    tags_list = [ tag.to_dict() for tag in campaign.tags ]
-    tags_by_cat = { cat.id: [] for cat in categories }
-    for tag in tags_list:
-      tags_by_cat[tag['category_id']].append(tag)
+    # tags_list = [ tag.to_dict() for tag in campaign.tags ]
+    # tags_by_cat = { cat.id: [] for cat in categories }
+    # for tag in tags_list:
+    #   tags_by_cat[tag['category_id']].append(tag)
+    formatted_tags = { tag.name:tag.to_dict() for tag in campaign.tags }
 
     # notes_list = Note.query.filter_by(campaign_id=current_campaign_id).order_by('created_at')
     # formatted_notes = { note.id:note.to_dict() for note in notes_list }
 
-    res = make_response({ 'categories': formatted_cats, 'tags': tags_by_cat })
+    res = make_response({ 'categories': formatted_cats, 'tags': formatted_tags })
     return res
   else:
     return jsonify({ 'errors': ["could not load campaign data from database"]})
+
+@campaigns.route('/<current_campaign_id>/', methods=['POST', ])
+@login_required
+def add_note(current_campaign_id):
+  data = request.json
+  note_content = data['noteContent']
+  new_hashtag_names = data['newHashtags']
+  hashtag_ids = data['hashtagIds']
+  # print(f'++++++++++request data: {data}')
+  if not data:
+    res = make_response({'errors': ['no request data']}, 400)
+    return res
+  if len(note_content) > 255:
+    res = make_response({'errors': ['Note is longer than 255 characters']}, 400)
+    return res
+
+  new_note = Note(content=note_content)
+  new_tags = []
+  for tag_name in new_hashtag_names:
+    new_tag = Tag(name=tag_name, campaign_id=current_campaign_id, category_id = 1)
+    db.session.add(new_tag)
+    new_note.tags.append(new_tag)
+    new_tags.append(new_tag.to_dict())
+  for tagId in hashtag_ids:
+    tag = Tag.query.get(tagId)
+    new_note.tags.append(tag)
+
+  db.session.add(new_note)
+  db.session.commit()
+  res = make_response({
+                        'message': 'new note successfully created',
+                        'newNote': new_note.to_dict(),
+                        'newTags': new_tags }, 200)
+  return res
+
+
+
+
 
 
 @campaigns.route('/', methods=['POST', ])

@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 
 const SET_TAGS = 'tags/SET_TAGS';
 const ADD_TAG = 'campaigns/ADD_TAG';
+const ADD_TAGS = 'campaigns/ADD_TAGS';
 
 
 export const setTags = tags => {
@@ -15,6 +16,13 @@ export const addTag = tag => {
   return ({
     type: ADD_TAG,
     tag,
+  });
+}
+
+export const addTags = tags => {
+  return ({
+    type: ADD_TAGS,
+    tags,
   });
 }
 
@@ -55,13 +63,19 @@ export const newTag = (name, campaign_id, category_id) => async dispatch => {
   return res
 }
 
-export default function tagReducer(state={}, action) {
+export default function tagReducer(state={ }, action) {
   const newState = Object.assign({}, state);
   switch (action.type) {
     case SET_TAGS:
       return action.tags;
     case ADD_TAG:
-      newState[action.tag.id] = action.tag;
+      newState[action.tag.name] = action.tag;
+      return newState;
+    case ADD_TAGS:
+      debugger
+      action.tags.forEach(tag => {
+        newState[tag.name] = tag;
+      })
       return newState;
     default:
       return state;

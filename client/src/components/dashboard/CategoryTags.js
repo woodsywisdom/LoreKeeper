@@ -26,10 +26,10 @@ const tagBuilder = (tag) => {
   )
 }
 
-const CategoryTags = ({ catId }) => {
+const CategoryTags = ({ catId, tagIds }) => {
 
   const classes = useStyles();
-  const catTags = useSelector(state => state.entities.tags[catId]);
+  const catTags = useSelector(state => Object.values(state.entities.tags).filter(tag => tag.category_id === catId));
 
   return (
     <>
