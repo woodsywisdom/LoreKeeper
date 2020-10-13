@@ -72,7 +72,6 @@ export default function tagReducer(state={ }, action) {
       newState[action.tag.name] = action.tag;
       return newState;
     case ADD_TAGS:
-      debugger
       action.tags.forEach(tag => {
         newState[tag.name] = tag;
       })

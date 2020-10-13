@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import { Box, Card, List, ListItem, ListItemText, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { getNotes } from '../../store/notes';
+
 
 const useStyles = makeStyles(theme => ({
   notecard: {
@@ -36,31 +38,37 @@ renderRow.propTypes = {
   style: PropTypes.object.isRequired,
 };
 
+
+
 const TagNotes = ({ tag }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [notes, setNotes] = useState([]);
+  const notes = useSelector(state => state.entities.notes[tag.name]);
+  // const [notes, setNotes] = useState([]);
+  const [height, setHeight] = useState(100);
+
+  const recalcSize = () => {
+    const newHeight = window.innerHeight - 285;
+    setHeight(newHeight)
+  };
 
   useEffect(() => {
-    const loadNotes = async () => {
-      const res = await fetch(`/api/notes/${tag.id}/`);
-      const { savedNotes } = await res.json();
-      if (res.ok) {
-        setNotes(savedNotes);
-      }
-    }
-    loadNotes();
+    dispatch(getNotes(tag));
+
+    recalcSize();
+    window.addEventListener('resize', recalcSize);
   }, [dispatch]);
+
 
   return (
     <>
       <Box className={classes.pinnedTag} display='flex'>
         <Typography variant='h5'>{tag.name}</Typography>
         <FixedSizeList
-          height={400}
+          height={height}
           width={360}
-          itemSize={70}
-          itemCount={notes.length}
+          itemSize={80}
+          itemCount={notes ? notes.length : 0}
           itemData={notes}
         >
           {renderRow}

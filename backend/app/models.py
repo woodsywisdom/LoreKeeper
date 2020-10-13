@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.orderinglist import ordering_list
 from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -9,6 +10,12 @@ notes_tags = db.Table('notes_tags',
   db.Column('note_id', db.Integer, db.ForeignKey('notes.id'), primary_key=True),
   db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
 )
+
+# campaign_pins = db.Table('campaign_pins',
+#   db.Column('campaign_id', db.Integer, db.ForeignKey('campaigns.id'), primary_key=True),
+#   db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
+#   db.Column('index', db.Integer),
+# )
 
 class User(UserMixin, db.Model):
   __tablename__ = 'users'
@@ -27,6 +34,9 @@ class User(UserMixin, db.Model):
       "username": self.username,
       "email": self.email,
       "campaigns": self.campaigns,
+      "is_authenticated": self.is_authenticated,
+      "is_active": self.is_active,
+      "is_anonymous": self.is_anonymous,
     }
 
   @property
@@ -53,7 +63,10 @@ class Campaign(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
+
   tags = db.relationship('Tag', order_by='Tag.name', backref='campaign')
+  pins = db.relationship('Pin', order_by='Pin.position', collection_class=ordering_list('position'))
+
 
   def to_dict(self):
     return {
@@ -119,5 +132,15 @@ class Note(db.Model):
       "id": self.id,
       "content": self.content,
       "created_at": self.created_at,
-      "tags": [ tag.id for tag in self.tags ],
+      "tags": [ tag.name for tag in self.tags ],
     }
+
+class Pin(db.Model):
+  __tablename__ = 'pins'
+
+  id = db.Column(db.Integer, primary_key=True)
+  campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
+  tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), nullable=False)
+  position = db.Column(db.Integer)
+
+  tag = db.relationship('Tag', uselist=False)

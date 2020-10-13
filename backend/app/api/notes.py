@@ -13,4 +13,5 @@ def load_notes(tag_id):
 
   formatted_notes = [ note.to_dict() for note in tag.notes ]
 
-  return make_response({ 'savedNotes': formatted_notes })
+  res = make_response({ 'savedNotes': formatted_notes })
+  return res

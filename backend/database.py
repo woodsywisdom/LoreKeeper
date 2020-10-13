@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app import app, db
-from app.models import User, Campaign, Category, Tag, Note
+from app.models import User, Campaign, Category, Pin, Tag, Note
 
 with app.app_context():
   db.drop_all()
@@ -79,6 +79,9 @@ with app.app_context():
   n6.tags.append(s1)
   n6.tags.append(ds)
   n6.tags.append(bob)
+
+  pin1 = Pin(campaign_id=1, tag_id=1)
+  lmop.pins.append(pin1)
 
   db.session.add(n1)
   db.session.add(n2)

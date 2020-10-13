@@ -17,18 +17,11 @@ def load_campaign(current_campaign_id):
   if campaign.user_id == current_user.id:
     categories = Category.query.all()
     formatted_cats = [ cat.to_dict() for cat in categories ]
-    # tags_by_cat = { category.id:category.tags for category in categories }
 
-    # tags_list = [ tag.to_dict() for tag in campaign.tags ]
-    # tags_by_cat = { cat.id: [] for cat in categories }
-    # for tag in tags_list:
-    #   tags_by_cat[tag['category_id']].append(tag)
     formatted_tags = { tag.name:tag.to_dict() for tag in campaign.tags }
+    pinned_list = [ pin.tag.to_dict() for pin in campaign.pins]
 
-    # notes_list = Note.query.filter_by(campaign_id=current_campaign_id).order_by('created_at')
-    # formatted_notes = { note.id:note.to_dict() for note in notes_list }
-
-    res = make_response({ 'categories': formatted_cats, 'tags': formatted_tags })
+    res = make_response({ 'categories': formatted_cats, 'tags': formatted_tags, 'pins': pinned_list })
     return res
   else:
     return jsonify({ 'errors': ["could not load campaign data from database"]})

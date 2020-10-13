@@ -49,7 +49,7 @@ function App() {
         loadUser();
     }, [dispatch]);
 
-    const currentUserId = useSelector(state => state.auth.id)
+    const currentUser = useSelector(state => state.auth)
 
     if (loading) {
         return <WelcomePage />
@@ -60,7 +60,7 @@ function App() {
             <CssBaseline />
             <BrowserRouter>
                 <Navbar />
-                <CustomSwitch userId={currentUserId} />
+                <CustomSwitch user={currentUser} />
             </BrowserRouter>
         </ThemeProvider>
     );

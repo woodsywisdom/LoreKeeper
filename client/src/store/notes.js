@@ -2,13 +2,30 @@ import Cookies from 'js-cookie';
 
 import { addTags } from './tags';
 
+const SET_NOTES = 'notes/SET_NOTES';
 const ADD_NOTE = 'notes/ADD_NOTE';
 
-export const addNote = note => {
+const setNotes = (tagName, notes) => {
+  return ({
+    type: SET_NOTES,
+    tagName,
+    notes,
+  });
+}
+
+export const addNote = (note) => {
   return ({
     type: ADD_NOTE,
     note,
   });
+}
+
+export const getNotes = tag => async dispatch => {
+  const res = await fetch(`/api/notes/${tag.id}/`);
+  const { savedNotes } = await res.json();
+  if (res.ok) {
+    dispatch(setNotes(tag.name, savedNotes));
+  }
 }
 
 export const createNote = (noteContent, hashtagIds, campaignId, newHashtags) => async dispatch => {
@@ -27,8 +44,6 @@ export const createNote = (noteContent, hashtagIds, campaignId, newHashtags) => 
     const { newNote, newTags } = data;
     dispatch(addNote(newNote));
     dispatch(addTags(newTags));
-    debugger
-
     res.errors = [];
   } else {
     res.errors = data.errors;
@@ -42,7 +57,14 @@ export default function noteReducer(state={}, action) {
   switch(action.type) {
     case ADD_NOTE:
       const newNote = action.note;
-      newState[newNote.id] = newNote;
+      newNote.tags.forEach(tagName => {
+        if (tagName in newState) {
+          newState[tagName] = [...newState[tagName], newNote];
+        }
+      });
+      return newState;
+    case SET_NOTES:
+      newState[action.tagName] = action.notes;
       return newState;
     default:
       return state;

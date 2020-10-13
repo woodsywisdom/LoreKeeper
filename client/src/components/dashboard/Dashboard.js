@@ -9,7 +9,7 @@ import CorkBoard from './CorkBoard';
 import { setCategories } from '../../store/categories';
 import { setTags } from '../../store/tags';
 import { createNote } from '../../store/notes';
-import { setCurrentSession, pinTag } from '../../store/ui';
+import { setCurrentSession, setPins } from '../../store/ui';
 
 const useStyles = makeStyles({
   dashboardBox: {
@@ -75,7 +75,7 @@ const Dashboard = (props) => {
       }
     });
     const newNote = dispatch(createNote(newNoteContent, hashtagIds, campaignId, newHashtags));
-
+    setNewNoteContent(`${currentSession.name} `);
     if ('errors' in newNote) {
       //add error handling
       return
@@ -92,8 +92,8 @@ const Dashboard = (props) => {
         const sessions = Object.values(data.tags).filter(tag => tag.category_id === 2);
         const lastSession = sessions[sessions.length - 1];
         dispatch(setCurrentSession(lastSession));
-        dispatch(pinTag(lastSession));
-        setNewNoteContent(lastSession.name);
+        dispatch(setPins(data.pins));
+        setNewNoteContent(`${lastSession.name} `);
       }
     }
     loadData();
