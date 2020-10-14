@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Container, Grid, Card, Typography, List, ListItem, ListItemText, ListItemIcon, Dialog } from '@material-ui/core';
+import { Container, Grid, Card, CardActions, Typography, List, ListItem, ListItemText, ListItemIcon, Dialog, Button, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CampaignCard from './CampaignCard';
 import CampaignForm from './CampaignForm';
+import { loadCampaigns } from '../../store/campaigns';
 
 
 const useStyles = makeStyles({
   yourCampaignsHeader: {
     padding: '40px 0px',
   },
-  addCard: {
+  addButton: {
     cursor: 'pointer',
-    height: '180px',
+    marginLeft: '40px',
+  },
+  campaignsContainer: {
+    paddingTop: '6vh',
   }
 })
 
-const CampaignsPage = () => {
-
+const CampaignsPage = (props) => {
+  const dispatch = useDispatch();
+  const userId = props.match.params.userId
   const campaigns = useSelector(state => state.entities.campaigns);
   const classes = useStyles();
 
@@ -31,24 +36,32 @@ const CampaignsPage = () => {
     setFormOpen(!formOpen);
   }
 
+  useEffect(() => {
+    dispatch(loadCampaigns(userId));
+  }, [dispatch]);
+
 
   return (
     <>
       <CampaignForm open={formOpen} />
-      <Container>
-        <Typography className={classes.yourCampaignsHeader} variant='h4'>Your Campaigns</Typography>
+      <Container className={classes.campaignsContainer}>
+        <Typography className={classes.yourCampaignsHeader} variant='h4'>
+          Your Campaigns
+          <Button className={classes.addButton} variant='contained' onClick={handleClick}>
+            <AddIcon />
+          </Button>
+
+        </Typography>
         <Grid container spacing={3} >
-          {campaigns ? campaigns.map(campaign => {
+          {campaigns ? Object.values(campaigns).map(campaign => {
             return (
               <CampaignCard
                 key={campaign.id}
-                id={campaign.id}
-                title={campaign.title}
-                description={campaign.description}
+                campaign={campaign}
               />
             );
           }) : <></>}
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <Card
               onClick={handleClick}
               className={classes.addCard}
@@ -62,9 +75,12 @@ const CampaignsPage = () => {
                 <ListItem>
                   <ListItemIcon><AddIcon /></ListItemIcon>
                 </ListItem>
+                <CardActions >
+                  <Button onC
+                </CardActions>
               </List>
             </Card>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </>

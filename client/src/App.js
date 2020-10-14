@@ -39,9 +39,6 @@ function App() {
             const res = await fetch('/api/session/current-user/');
             if (res.ok && !res.errors) {
                 const user = await res.json();
-                const campaigns = user.campaigns;
-                dispatch(setCampaigns(campaigns));
-                delete user.campaigns;
                 dispatch(setUser(user));
             }
             setLoading(false);

@@ -1,9 +1,17 @@
 
 
+const SET_CURRENT_CAMPAIGN = 'ui/SET_CURRENT_CAMPAIGN';
 const SET_CURRENT_SESSION = 'ui/SET_CURRENT_SESSION';
 const SET_PINS = 'ui/SET_PINS';
 const PIN_TAG = 'ui/PIN_TAG';
 
+
+export const setCurrentCampaign = currentCampaign => {
+  return ({
+    type: SET_CURRENT_CAMPAIGN,
+    currentCampaign,
+  });
+}
 
 export const setCurrentSession = currentSession => {
   return ({
@@ -26,9 +34,18 @@ export const pinTag = tag => {
   });
 }
 
-export default function uiReducer(state={ currentSession: {}, pinnedTags: []}, action) {
+const defaultState = {
+  currentSession: {},
+  pinnedTags: [],
+  currentCampaign: {}
+}
+
+export default function uiReducer(state=defaultState, action) {
   const newState = Object.assign({}, state);
   switch(action.type) {
+    case SET_CURRENT_CAMPAIGN:
+      newState.currentCampaign = action.currentCampaign;
+      return newState;
     case SET_CURRENT_SESSION:
       newState.currentSession = action.currentSession;
       return newState;

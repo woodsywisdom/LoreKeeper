@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 
 const SET_CAMPAIGNS = 'campaigns/SET_CAMPAIGNS';
 const ADD_CAMPAIGN = 'campaigns/ADD_CAMPAIGN';
+const REMOVE_CAMPAIGN = 'campaigns/REMOVE_CAMPAIGN';
 
 
 export const setCampaigns = campaigns => {
@@ -21,6 +22,24 @@ export const addCampaign = campaign => {
   });
 }
 
+export const removeCampaign = campaignId => {
+  return ({
+    type: REMOVE_CAMPAIGN,
+    campaignId,
+  });
+}
+
+export const loadCampaigns = userId => async dispatch => {
+  const res = await fetch(`/api/users/${userId}/campaigns/`);
+  const data = await res.json();
+  if (res.ok && !data['errors']) {
+    dispatch(setCampaigns(data.campaigns));
+  } else {
+    res.errors = data.errors
+  }
+  return res
+}
+
 export const newCampaign = (title, description) => async dispatch => {
   const csrf_token = Cookies.get('XSRF-TOKEN');
 
@@ -34,20 +53,43 @@ export const newCampaign = (title, description) => async dispatch => {
   });
   const data = await res.json();
   if (res.ok && !data['errors']) {
-    dispatch(addCampaign(data));
+    dispatch(addCampaign(data.campaign));
   } else {
     res.errors = data.errors
   }
   return res
 }
 
-export default function campaignReducer(state=[], action) {
-  const newState = [...state];
+export const deleteCampaign = campaignId => async dispatch => {
+  const csrf_token = Cookies.get('XSRF-TOKEN');
+  const res = await fetch(`/api/campaigns/${campaignId}/`, {
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFTOKEN': csrf_token
+    },
+  });
+  const data = await res.json();
+  if (res.ok && !data['errors']) {
+    dispatch(removeCampaign(campaignId));
+  } else {
+    res.errors = data.errors
+  }
+  return res
+}
+
+
+export default function campaignReducer(state={}, action) {
+  const newState = Object.assign({}, state);
   switch (action.type) {
     case SET_CAMPAIGNS:
       return action.campaigns;
     case ADD_CAMPAIGN:
-      newState.push(action.campaign);
+      const newCampaign = action.campaign;
+      newState[newCampaign.id] = newCampaign;
+      return newState;
+    case REMOVE_CAMPAIGN:
+      delete newState[action.campaignId];
       return newState;
     default:
       return state;

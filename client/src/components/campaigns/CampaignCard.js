@@ -1,7 +1,11 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
-import { Grid, Card, Typography, List, ListItem, ListItemText } from '@material-ui/core';
+import { Grid, Button, Card, Typography, List, ListItem, ListItemText, CardActions } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from '@material-ui/icons/Delete';
+
+import { deleteCampaign } from '../../store/campaigns';
 
 
 const useStyles = makeStyles({
@@ -12,14 +16,20 @@ const useStyles = makeStyles({
   },
 })
 
-const CampaignCard = (props) => {
-
+const CampaignCard = ({campaign}) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const { id, title, description } = campaign;
 
   const handleClick = (e) => {
     e.preventDefault();
-    console.log(e.currentTarget.id);
-    window.location = `/campaigns/${e.currentTarget.id}`
+    window.location = `/campaigns/${e.currentTarget.id}`;
+  }
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dispatch(deleteCampaign(id));
   }
 
   return (
@@ -27,21 +37,26 @@ const CampaignCard = (props) => {
       <Grid item xs={4}>
         <Card
           onClick={handleClick}
-          id={props.id}
+          id={id}
           className={classes.campaignCard}
         >
           <List>
             <ListItem>
               <ListItemText>
-                <Typography variant='button'>{props.title}</Typography>
+                <Typography variant='button'>{title}</Typography>
               </ListItemText>
             </ListItem>
             <ListItem>
               <ListItemText>
-                <Typography variant='caption'>{props.description}</Typography>
+                <Typography variant='caption'>{description}</Typography>
               </ListItemText>
             </ListItem>
           </List>
+          <CardActions className={classes.cardActions}>
+            <Button onClick={handleDelete}>
+              <DeleteIcon />
+            </Button>
+          </CardActions>
         </Card>
       </Grid>
 

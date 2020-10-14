@@ -22,6 +22,8 @@ const useStyles = makeStyles(theme => ({
 const Navbar = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const currentCampaign = useSelector(state => state.ui.currentCampaign);
+  const currentUser = useSelector(state => state.auth);
 
   const logoClick = e => {
     e.preventDefault();
@@ -46,12 +48,16 @@ const Navbar = () => {
             <Typography variant='button'>LoreKeeper</Typography>
           </Box>
           <Box>
-            <Button onClick={handleLogin}>Login</Button>
-            <Button onClick={handleLogout}>Logout</Button>
-            <Button endIcon={<ExpandMoreIcon />}>Campaigns</Button>
-            <IconButton>
-              <AccountCircle />
-            </IconButton>
+            <Button endIcon={<ExpandMoreIcon />}>
+              { currentCampaign.title ? currentCampaign.title
+                : <Typography variant='button'>Select a Campaign!</Typography>}
+            </Button>
+          </Box>
+          <Box>
+            { currentUser.is_authenticated ?
+              <Button onClick={handleLogout}>Logout</Button>
+              : <Button onClick={handleLogin}>Login</Button>
+            }
           </Box>
         </Toolbar>
       </AppBar>

@@ -21,10 +21,13 @@ def load_campaign(current_campaign_id):
     formatted_tags = { tag.name:tag.to_dict() for tag in campaign.tags }
     pinned_list = [ pin.tag.to_dict() for pin in campaign.pins]
 
-    res = make_response({ 'categories': formatted_cats, 'tags': formatted_tags, 'pins': pinned_list })
+    res = make_response({ 'campaign': campaign.to_dict(),
+                          'categories': formatted_cats,
+                          'tags': formatted_tags,
+                          'pins': pinned_list, })
     return res
   else:
-    return jsonify({ 'errors': ["could not load campaign data from database"]})
+    return make_response({ 'errors': ['You are not authorized to access this campaign', ]}, 400)
 
 @campaigns.route('/<current_campaign_id>/', methods=['POST', ])
 @login_required
@@ -33,7 +36,6 @@ def add_note(current_campaign_id):
   note_content = data['noteContent']
   new_hashtag_names = data['newHashtags']
   hashtag_ids = data['hashtagIds']
-  # print(f'++++++++++request data: {data}')
   if not data:
     res = make_response({'errors': ['no request data']}, 400)
     return res
@@ -60,10 +62,16 @@ def add_note(current_campaign_id):
                         'newTags': new_tags }, 200)
   return res
 
-
-
-
-
+# @campaigns.route('/<user_id>')
+# @login_required
+# def load_campaigns(user_id):
+#   if current_user.get_id() == userId:
+#     campaigns_list = Campaign.query.filter(Campaign.user_id == user_id).all()
+#     formatted_campaigns = { campaign['id']: campaign.to_dict() for campaign in campaigns_list }
+#     res = make_response({ 'campaigns': formatted_campaigns })
+#     return res
+#   else:
+#     return make_response({ 'campaigns': {}, 'errors': ['You do not have access to this page']}, 401)
 
 @campaigns.route('/', methods=['POST', ])
 @login_required
@@ -82,8 +90,22 @@ def add_campaign():
                             user_id=current_user.id )
     db.session.add(new_campaign)
     db.session.commit()
-    return jsonify(new_campaign.to_dict())
+    return make_response({ 'campaign': new_campaign.to_dict() })
   else:
     # print(f'+++++++++form not validated')
     res = make_response({ "errors": [form.errors[error][0] for error in form.errors]}, 401)
-    return jsonify(res)
+    return res
+
+@campaigns.route('/<campaign_id>/', methods=['DELETE', ])
+@login_required
+def delete_campaign(campaign_id):
+  campaign = Campaign.query.get(campaign_id)
+  print(f'!!!!!!!!!{current_user.get_id()}')
+  print(f'!!!!!!!!!{campaign.user_id}')
+  print(f'!!!!!!!!!{int(current_user.get_id()) == campaign.user_id}')
+  if int(current_user.get_id()) == campaign.user_id:
+    db.session.delete(campaign)
+    db.session.commit()
+    return make_response({ 'message': 'Campaign successfully deleted'})
+  else:
+    return make_response({ 'errors': ['You do not have permission to delete this campaign']}, 401)

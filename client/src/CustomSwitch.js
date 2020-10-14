@@ -14,7 +14,7 @@ const CustomSwitch = ({user}) => {
       <Switch>
         <ProtectedRoute path='/users/:userId/campaigns' exact component={CampaignsPage} currentUser={user} />
         <ProtectedRoute path='/campaigns/:id' exact component={Dashboard} currentUser={user} />
-        <AuthRoute path='/welcome' exact component={WelcomePage} currentUser={user} />
+        {/* <AuthRoute path='/welcome' exact component={WelcomePage} currentUser={user} /> */}
         <AuthRoute path='/' exact component={WelcomePage} currentUser={user} />
       </Switch>
     </>

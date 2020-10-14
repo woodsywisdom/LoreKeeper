@@ -6,7 +6,7 @@ export const ProtectedRoute = ({ component: Component, path, currentUser, exact,
     <Route path={path} exact={exact} render={(props) => (
       currentUser.is_authenticated && !currentUser.is_anonymous ?
         <Component {...props} />
-        : <Redirect to='/welcome' />
+        : <Redirect to='/' />
     )} />
   )
 }
