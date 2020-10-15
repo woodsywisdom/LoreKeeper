@@ -48,7 +48,7 @@ const TagNotes = ({ tag }) => {
   const [height, setHeight] = useState(100);
 
   const recalcSize = () => {
-    const newHeight = window.innerHeight - 285;
+    const newHeight = window.innerHeight - 320;
     setHeight(newHeight)
   };
 

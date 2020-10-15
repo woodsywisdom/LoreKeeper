@@ -1,5 +1,10 @@
 import Cookies from 'js-cookie';
 import {setCampaigns} from './campaigns';
+import { clearCategories } from './categories';
+import { clearCampaigns } from './campaigns';
+import { clearTags } from './tags';
+import { clearNotes } from './notes';
+import { clearUi } from './ui';
 
 const SET_USER = 'auth/SET_USER';
 
@@ -49,7 +54,11 @@ export const logout = () => async (dispatch) => {
   const data = await res.json();
   if (res.ok && !data['errors']) {
     dispatch(setUser({ id: null }));
-    dispatch(setCampaigns([]));
+    dispatch(clearCampaigns());
+    dispatch(clearCategories());
+    dispatch(clearTags());
+    dispatch(clearNotes());
+    dispatch(clearUi());
   } else {
     res.errors = data['errors'];
   }

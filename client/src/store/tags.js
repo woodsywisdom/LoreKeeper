@@ -1,8 +1,9 @@
 import Cookies from 'js-cookie';
 
 const SET_TAGS = 'tags/SET_TAGS';
-const ADD_TAG = 'campaigns/ADD_TAG';
-const ADD_TAGS = 'campaigns/ADD_TAGS';
+const ADD_TAG = 'tags/ADD_TAG';
+const ADD_TAGS = 'tags/ADD_TAGS';
+const CLEAR_TAGS = 'tags/CLEAR_TAGS';
 
 
 export const setTags = tags => {
@@ -23,6 +24,12 @@ export const addTags = tags => {
   return ({
     type: ADD_TAGS,
     tags,
+  });
+}
+
+export const clearTags = () => {
+  return ({
+    type: CLEAR_TAGS,
   });
 }
 
@@ -72,10 +79,12 @@ export default function tagReducer(state={ }, action) {
       newState[action.tag.name] = action.tag;
       return newState;
     case ADD_TAGS:
-      action.tags.forEach(tag => {
+      Object.values(action.tags).forEach(tag => {
         newState[tag.name] = tag;
-      })
+      });
       return newState;
+    case CLEAR_TAGS:
+      return {};
     default:
       return state;
   }

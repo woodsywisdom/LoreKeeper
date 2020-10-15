@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 const SET_CAMPAIGNS = 'campaigns/SET_CAMPAIGNS';
 const ADD_CAMPAIGN = 'campaigns/ADD_CAMPAIGN';
 const REMOVE_CAMPAIGN = 'campaigns/REMOVE_CAMPAIGN';
+const CLEAR_CAMPAIGNS = 'campaigns/CLEAR_CAMPAIGNS';
 
 
 export const setCampaigns = campaigns => {
@@ -26,6 +27,12 @@ export const removeCampaign = campaignId => {
   return ({
     type: REMOVE_CAMPAIGN,
     campaignId,
+  });
+}
+
+export const clearCampaigns = () => {
+  return ({
+    type: CLEAR_CAMPAIGNS,
   });
 }
 
@@ -91,6 +98,8 @@ export default function campaignReducer(state={}, action) {
     case REMOVE_CAMPAIGN:
       delete newState[action.campaignId];
       return newState;
+    case CLEAR_CAMPAIGNS:
+      return {};
     default:
       return state;
   }

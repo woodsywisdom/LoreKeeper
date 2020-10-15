@@ -4,6 +4,7 @@ import { addTags } from './tags';
 
 const SET_NOTES = 'notes/SET_NOTES';
 const ADD_NOTE = 'notes/ADD_NOTE';
+const CLEAR_NOTES = 'notes/CLEAR_NOTES';
 
 const setNotes = (tagName, notes) => {
   return ({
@@ -17,6 +18,12 @@ export const addNote = (note) => {
   return ({
     type: ADD_NOTE,
     note,
+  });
+}
+
+export const clearNotes = () => {
+  return ({
+    type: CLEAR_NOTES,
   });
 }
 
@@ -66,6 +73,8 @@ export default function noteReducer(state={}, action) {
     case SET_NOTES:
       newState[action.tagName] = action.notes;
       return newState;
+    case CLEAR_NOTES:
+      return {};
     default:
       return state;
   }

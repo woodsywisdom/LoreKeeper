@@ -1,12 +1,19 @@
 // import Cookies from 'js-cookie';
 
 const SET_CATEGORIES = 'categories/SET_CATEGORIES';
+const CLEAR_CATEGORIES = 'categories/CLEAR_CATEGORIES';
 
 
 export const setCategories = categories => {
   return ({
     type: SET_CATEGORIES,
     categories,
+  });
+}
+
+export const clearCategories = () => {
+  return ({
+    type: CLEAR_CATEGORIES,
   });
 }
 
@@ -32,6 +39,8 @@ export default function categoryReducer(state=[], action) {
   switch (action.type) {
     case SET_CATEGORIES:
       return action.categories;
+    case CLEAR_CATEGORIES:
+      return [];
     default:
       return state;
   }

@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import CategoryTags from './CategoryTags';
 import CorkBoard from './CorkBoard';
+import Help from './Help';
 import { setCategories } from '../../store/categories';
 import { setTags } from '../../store/tags';
 import { createNote } from '../../store/notes';
@@ -34,14 +35,22 @@ const useStyles = makeStyles({
   },
   notePadContainer: {
     width: "100%",
-    height: "200px",
+    height: "225px",
     padding: '8px',
+    display: 'flex',
+    justifyContent: 'center',
   },
   notePad: {
     height: "100%",
+    width: '100%',
+    maxWidth: '600px',
+    margin: '0px 8px',
   },
   noteField: {
     width: '100%',
+  },
+  helpCard: {
+    width: '320px',
   }
 });
 
@@ -54,9 +63,9 @@ const Dashboard = (props) => {
   const tags = useSelector(state => state.entities.tags)
   const currentSession = useSelector(state => state.ui.currentSession);
   const [newNoteContent, setNewNoteContent] = useState("");
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const noteChange = (e) => {
-    e.preventDefault();
     setNewNoteContent(e.currentTarget.value);
   }
 
@@ -80,6 +89,10 @@ const Dashboard = (props) => {
       //add error handling
       return
     }
+  }
+
+  const helpToggle = (e) => {
+    setHelpOpen(!helpOpen);
   }
 
   useEffect(() => {
@@ -145,8 +158,10 @@ const Dashboard = (props) => {
             </CardContent>
             <CardActions>
               <Button onClick={noteSubmit} >Submit</Button>
+              <Button onClick={helpToggle} >{ helpOpen ? 'Close Help' : '?' }</Button>
             </CardActions>
           </Card>
+          { helpOpen ? <Help /> : <></> }
         </Box>
       </Box>
     </Box>
