@@ -11,6 +11,7 @@ import { setCategories } from '../../store/categories';
 import { setTags } from '../../store/tags';
 import { createNote } from '../../store/notes';
 import { setCurrentCampaign, setCurrentSession, setPins } from '../../store/ui';
+import TagEditForm from './TagEditForm';
 
 const useStyles = makeStyles({
   dashboardBox: {
@@ -63,7 +64,7 @@ const Dashboard = (props) => {
   const tags = useSelector(state => state.entities.tags)
   const currentSession = useSelector(state => state.ui.currentSession);
   const [newNoteContent, setNewNoteContent] = useState("");
-  const [helpOpen, setHelpOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(true);
 
   const noteChange = (e) => {
     setNewNoteContent(e.currentTarget.value);
@@ -76,7 +77,7 @@ const Dashboard = (props) => {
     let hashtagIds = [];
     let newHashtags = [];
     hashtags.forEach(hashtag => {
-      hashtag = (hashtag.replace(/[.,\/!$%\^&\*;:{}=`~()]/g,"")).toLowerCase();
+      hashtag = (hashtag.replace(/[.,/!$%^&*;:{}=`~()]/g, "")).toLowerCase();
       if (!(hashtag in tags)) {
         newHashtags.push(hashtag);
       } else {
@@ -93,6 +94,12 @@ const Dashboard = (props) => {
 
   const helpToggle = (e) => {
     setHelpOpen(!helpOpen);
+  }
+
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      noteSubmit(e);
+    }
   }
 
   useEffect(() => {
@@ -129,42 +136,46 @@ const Dashboard = (props) => {
   }
 
   return (
-    <Box className={classes.dashboardBox} >
-      <Drawer className={classes.drawer} variant='permanent' >
-        <List className={classes.categoryList}>
-          {categories ? categories.map(categoryBuilder) : <p>Loading</p>}
-        </List>
-      </Drawer>
-      <Box className={classes.content} >
-        <Box className={classes.corkBoard} >
-          <CorkBoard />
-        </Box>
-        <Box className={classes.notePadContainer} >
-          <Card className={classes.notePad}>
-            <CardContent>
-              {/* <Typography>The notepad will go here</Typography> */}
-              <TextField
-                className={classes.noteField}
-                label='Note contents.  Use "#" at the start of any tags you want to add'
-                multiline
-                rows={4}
-                variant='outlined'
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={noteChange}
-                value={newNoteContent}
-              />
-            </CardContent>
-            <CardActions>
-              <Button onClick={noteSubmit} >Submit</Button>
-              <Button onClick={helpToggle} >{ helpOpen ? 'Close Help' : '?' }</Button>
-            </CardActions>
-          </Card>
-          { helpOpen ? <Help /> : <></> }
+    <>
+      <TagEditForm />
+      <Box className={classes.dashboardBox} >
+        <Drawer className={classes.drawer} variant='permanent' >
+          <List className={classes.categoryList}>
+            {categories ? categories.map(categoryBuilder) : <p>Loading</p>}
+          </List>
+        </Drawer>
+        <Box className={classes.content} >
+          <Box className={classes.corkBoard} >
+            <CorkBoard />
+          </Box>
+          <Box className={classes.notePadContainer} >
+            <Card className={classes.notePad}>
+              <CardContent>
+                {/* <Typography>The notepad will go here</Typography> */}
+                <TextField
+                  className={classes.noteField}
+                  label='Note contents.  Use "#" at the start of any tags you want to add'
+                  multiline
+                  rows={4}
+                  variant='outlined'
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={noteChange}
+                  onKeyPress={handleEnter}
+                  value={newNoteContent}
+                />
+              </CardContent>
+              <CardActions>
+                <Button onClick={noteSubmit} >Submit</Button>
+                <Button onClick={helpToggle} >{helpOpen ? 'Close Help' : '?'}</Button>
+              </CardActions>
+            </Card>
+            {helpOpen ? <Help /> : <></>}
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 

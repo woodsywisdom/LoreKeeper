@@ -46,9 +46,10 @@ def add_note(current_campaign_id):
   new_note = Note(content=note_content)
   new_tags = []
   for tag_name in new_hashtag_names:
-    new_tag = Tag(name=tag_name, campaign_id=current_campaign_id, category_id = 1)
+    new_tag = Tag(name=tag_name, campaign_id=current_campaign_id, category_id = 1, user_id=current_user.id)
     db.session.add(new_tag)
     new_note.tags.append(new_tag)
+    db.session.flush()
     new_tags.append(new_tag.to_dict())
   for tagId in hashtag_ids:
     tag = Tag.query.get(tagId)
@@ -100,9 +101,9 @@ def add_campaign():
 @login_required
 def delete_campaign(campaign_id):
   campaign = Campaign.query.get(campaign_id)
-  print(f'!!!!!!!!!{current_user.get_id()}')
-  print(f'!!!!!!!!!{campaign.user_id}')
-  print(f'!!!!!!!!!{int(current_user.get_id()) == campaign.user_id}')
+  # print(f'!!!!!!!!!{current_user.get_id()}')
+  # print(f'!!!!!!!!!{campaign.user_id}')
+  # print(f'!!!!!!!!!{int(current_user.get_id()) == campaign.user_id}')
   if int(current_user.get_id()) == campaign.user_id:
     db.session.delete(campaign)
     db.session.commit()

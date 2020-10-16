@@ -5,6 +5,7 @@ const SET_CURRENT_SESSION = 'ui/SET_CURRENT_SESSION';
 const SET_PINS = 'ui/SET_PINS';
 const PIN_TAG = 'ui/PIN_TAG';
 const CLEAR_UI = 'ui/CLEAR_UI';
+const EDIT_TAG = 'ui/EDIT_TAG';
 
 
 export const setCurrentCampaign = currentCampaign => {
@@ -35,6 +36,13 @@ export const pinTag = tag => {
   });
 }
 
+export const setTagToEdit = tag => {
+  return ({
+    type: EDIT_TAG,
+    tag,
+  });
+}
+
 export const clearUi = () => {
   return ({
     type: CLEAR_UI,
@@ -44,7 +52,8 @@ export const clearUi = () => {
 const defaultState = {
   currentSession: {},
   pinnedTags: [],
-  currentCampaign: {}
+  currentCampaign: {},
+  tagToEdit: {},
 }
 
 export default function uiReducer(state=defaultState, action) {
@@ -62,6 +71,9 @@ export default function uiReducer(state=defaultState, action) {
     case PIN_TAG:
       const newPins = [...newState.pinnedTags, action.tag];
       newState.pinnedTags = newPins;
+      return newState;
+    case EDIT_TAG:
+      newState.tagToEdit = {...action.tag};
       return newState;
     case CLEAR_UI:
       return defaultState;

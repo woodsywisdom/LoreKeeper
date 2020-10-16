@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import backref
 from sqlalchemy.ext.orderinglist import ordering_list
 from datetime import datetime
 from flask_login import UserMixin
@@ -26,7 +27,7 @@ class User(UserMixin, db.Model):
   hashed_password = db.Column(db.String(200), nullable = False)
 
   campaigns = db.relationship('Campaign', backref='user')
-  # tags = db.relationship('Tag', backref='user')
+  tags = db.relationship('Tag', order_by='Tag.name')
 
   def to_dict(self):
     return {
@@ -105,8 +106,9 @@ class Tag(db.Model):
   name = db.Column(db.String(25), nullable=False)
   campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
   category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
-  # user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+  pin = db.relationship('Pin', uselist=False, back_populates='tag')
   # notes = db.relationship('Note', order_by='Note.created_at', secondary=notes_tags, backref='tags')
 
   def to_dict(self):
@@ -140,7 +142,16 @@ class Pin(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
-  tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), nullable=False)
+  tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
   position = db.Column(db.Integer)
 
-  tag = db.relationship('Tag', uselist=False)
+  tag = db.relationship('Tag', back_populates='pin')
+
+  def to_dict(self):
+    return {
+      "id": self.id,
+      "campaignId": self.campaign_id,
+      "tagId": self.tag_id,
+      "position": self.position,
+      'tag': self.tag.name,
+    }

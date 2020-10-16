@@ -28,7 +28,7 @@ export const clearNotes = () => {
 }
 
 export const getNotes = tag => async dispatch => {
-  const res = await fetch(`/api/notes/${tag.id}/`);
+  const res = await fetch(`/api/tags/${tag.id}/`);
   const { savedNotes } = await res.json();
   if (res.ok) {
     dispatch(setNotes(tag.name, savedNotes));
@@ -55,7 +55,7 @@ export const createNote = (noteContent, hashtagIds, campaignId, newHashtags) => 
   } else {
     res.errors = data.errors;
   }
-  return res;
+  return data;
 }
 
 

@@ -8,7 +8,7 @@ from .models import db, User
 from .api.user_routes import user_routes
 from .api.session import session, login_manager
 from .api.campaigns import campaigns
-from .api.notes import notes
+from .api.tags import tags
 
 from .config import Config
 
@@ -19,7 +19,7 @@ app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(session, url_prefix='/api/session')
 app.register_blueprint(campaigns, url_prefix='/api/campaigns')
-app.register_blueprint(notes, url_prefix='/api/notes')
+app.register_blueprint(tags, url_prefix='/api/tags')
 # csrf.init_app(app) #apply csrf protection to entirety of app?
 db.init_app(app)
 login_manager.init_app(app)

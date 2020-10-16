@@ -28,6 +28,7 @@ with app.app_context():
   npcs = Category(name='NPCs', description="Your adventurers' allies and enemies")
   locale = Category(name='Locales', description='The settings for your adventure')
   other = Category(name='Other', description='Who knows?')
+  archived = Category(name='Archived', description="Stuff you don't want anymoer")
 
   db.session.add(new_tags)
   db.session.add(sessions)
@@ -35,6 +36,7 @@ with app.app_context():
   db.session.add(npcs)
   db.session.add(locale)
   db.session.add(other)
+  db.session.add(archived)
 
   lmop = Campaign(title='Lost Mine of Phandelver', description='A great introduction to the game', user_id=1)
   rotfm = Campaign(title='Rime of the Frost Maiden', description='Hope you like frozen food', user_id=1)
@@ -42,11 +44,11 @@ with app.app_context():
   db.session.add(lmop)
   db.session.add(rotfm)
 
-  s1 = Tag(name='#session-1', campaign_id=1, category_id=2 )
-  ds = Tag(name='#deathshadow', campaign_id=1, category_id=3 )
-  bob = Tag(name='#boblin', campaign_id=1, category_id=4 )
-  tne = Tag(name='#thenaughtyelf', campaign_id=1, category_id=5 )
-  tcm = Tag(name='#thechickensmaw', campaign_id=1, category_id=5 )
+  s1 = Tag(name='#session-1', campaign_id=1, category_id=2, user_id=1 )
+  ds = Tag(name='#deathshadow', campaign_id=1, category_id=3, user_id=1 )
+  bob = Tag(name='#boblin', campaign_id=1, category_id=4, user_id=1 )
+  tne = Tag(name='#thenaughtyelf', campaign_id=1, category_id=5, user_id=1 )
+  tcm = Tag(name='#thechickensmaw', campaign_id=1, category_id=5, user_id=1 )
 
   db.session.add(s1)
   db.session.add(ds)

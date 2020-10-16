@@ -8,7 +8,8 @@ import ListAltIcon from '@material-ui/icons/ListAlt';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { pinTag } from '../../store/ui';
+import { pinTag, setTagToEdit } from '../../store/ui';
+import { recategorizeTag } from '../../store/tags';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -21,16 +22,17 @@ const TagAccordion = ({ tag }) => {
 
   const dispatch = useDispatch();
 
-  const handlePin = () => {
+  const handlePin = (e) => {
     dispatch(pinTag(tag));
     return
   }
 
-  const handleEdit = () => {
-    return
+  const handleEdit = (e) => {
+    dispatch(setTagToEdit(tag));
   }
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    dispatch(recategorizeTag(tag, 7));
     return
   }
 
