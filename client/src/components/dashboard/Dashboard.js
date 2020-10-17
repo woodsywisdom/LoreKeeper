@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActions, CardContent, Drawer, Grid, List, ListItem, TextField, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActions, CardContent, Drawer, List, TextField, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -107,6 +107,7 @@ const Dashboard = (props) => {
       const res = await fetch(`/api/campaigns/${campaignId}`);
       if (res.ok) {
         const data = await res.json();
+        debugger
         dispatch(setCategories(data.categories));
         dispatch(setTags(data.tags));
         const sessions = Object.values(data.tags).filter(tag => tag.category_id === 2);
@@ -118,7 +119,7 @@ const Dashboard = (props) => {
       }
     }
     loadData();
-  }, [dispatch]);
+  }, [dispatch, campaignId]);
 
   const categoryBuilder = (category) => {
     return (

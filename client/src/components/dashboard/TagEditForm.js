@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, Card, CardActions, CardContent, Dialog, Select, TextField, Typography } from '@material-ui/core';
+import { Button, Card, CardActions, CardContent, Dialog, Select, Typography } from '@material-ui/core';
 
 import { setTagToEdit } from '../../store/ui';
 import { recategorizeTag } from '../../store/tags';
@@ -11,7 +11,7 @@ const TagEditForm = () => {
   const dispatch = useDispatch();
   const tagToEdit = useSelector(state => state.ui.tagToEdit);
   const categories = useSelector(state => state.entities.categories)
-  const currentCategory = categories[tagToEdit.category_id - 1];
+  // const currentCategory = categories[tagToEdit.category_id - 1];
   // const [newName, setNewName] = useState(tagToEdit.name);
   const [newCategoryId, setNewCategoryId] = useState(tagToEdit.category_id);
 

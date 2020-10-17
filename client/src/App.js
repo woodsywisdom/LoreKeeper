@@ -67,14 +67,14 @@ function App() {
             }
         }
         setCSRF();
-    }, [dispatch]);
+    }, []);
 
     useEffect(() => {
         const loadUser = async () => {
             const res = await fetch('/api/session/current-user/');
-            if (res.ok && !res.errors) {
-                const user = await res.json();
-                dispatch(setUser(user));
+            const data = await res.json();
+            if (res.ok && !data.errors) {
+                dispatch(setUser(data.user));
             }
             setLoading(false);
         }

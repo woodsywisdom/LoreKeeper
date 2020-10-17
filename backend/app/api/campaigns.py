@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from sqlalchemy.orm import subqueryload
 # from werkzeug.datastructures import MultiDict
 
-from app.models import Campaign, Category, Note, Tag, db
+from app.models import Campaign, Category, Note, Tag, Pin, db
 from app.forms import CampaignForm
 
 campaigns = Blueprint('campaigns', __name__)
@@ -13,6 +13,7 @@ campaigns = Blueprint('campaigns', __name__)
 @login_required
 def load_campaign(current_campaign_id):
   campaign = Campaign.query.get(current_campaign_id)
+  print(f'_____________campaign {current_campaign_id}: {campaign}')
 
   if campaign.user_id == current_user.id:
     categories = Category.query.all()
@@ -20,6 +21,9 @@ def load_campaign(current_campaign_id):
 
     formatted_tags = { tag.name:tag.to_dict() for tag in campaign.tags }
     pinned_list = [ pin.tag.to_dict() for pin in campaign.pins]
+    print(f'_____________tags: {formatted_tags}')
+    print(f'_____________pins: {pinned_list}')
+
 
     res = make_response({ 'campaign': campaign.to_dict(),
                           'categories': formatted_cats,
@@ -81,20 +85,36 @@ def add_campaign():
   # print(f'++++++++++request data: {data}')
 
   form = CampaignForm(mapping = data)
-
+  print(f'*************data: {data}')
+  print(f'*************form.data: {form.data}')
   if not data:
-    return jsonify({'errors': 'no request data'})
+    return jsonify({'errors': ['no request data',]})
   if form.validate():
     # print(f'+++++++++form validated')
     new_campaign = Campaign(title=data['title'],
                             description=data['description'],
                             user_id=current_user.id )
     db.session.add(new_campaign)
+    db.session.flush()
+    print(f'_____________ new_campaign: {new_campaign.to_dict()}')
+    first_session = Tag(name='#session-1',
+                        campaign_id=new_campaign.id,
+                        category_id=2,
+                        user_id=current_user.id)
+    new_campaign.tags.append(first_session)
+    db.session.add(first_session)
+    db.session.flush()
+    print(f'_____________first_session: {first_session.to_dict()}')
+    print(f'_____________ new_campaign: {new_campaign.to_dict()}')
+    default_pin = Pin(campaign_id=new_campaign.id,
+                      tag_id=first_session.id)
+    new_campaign.pins.append(default_pin)
+    db.session.add(default_pin)
     db.session.commit()
     return make_response({ 'campaign': new_campaign.to_dict() })
   else:
-    # print(f'+++++++++form not validated')
-    res = make_response({ "errors": [form.errors[error][0] for error in form.errors]}, 401)
+    print(f'+++++++++form not validated {form.errors}')
+    res = make_response({ "errors": [form.errors[error][0] for error in form.errors]}, 400)
     return res
 
 @campaigns.route('/<campaign_id>/', methods=['DELETE', ])

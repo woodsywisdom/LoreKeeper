@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FixedSizeList } from 'react-window';
 import PropTypes from 'prop-types';
 
-import { Box, Card, List, ListItem, ListItemText, Typography } from '@material-ui/core';
+import { Box, Divider, ListItem, ListItemText, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { getNotes } from '../../store/notes';
@@ -27,9 +27,11 @@ const renderRow = (props) => {
   const note = data[index];
 
   return (
-    <ListItem style={style} key={index}>
+    <>
+    <ListItem style={style} key={index} divider >
       <ListItemText primary={note.content} />
     </ListItem>
+    </>
   );
 }
 
@@ -57,7 +59,7 @@ const TagNotes = ({ tag }) => {
 
     recalcSize();
     window.addEventListener('resize', recalcSize);
-  }, [dispatch]);
+  }, [dispatch, tag]);
 
 
   return (
@@ -70,6 +72,7 @@ const TagNotes = ({ tag }) => {
           itemSize={80}
           itemCount={notes ? notes.length : 0}
           itemData={notes}
+          border
         >
           {renderRow}
         </FixedSizeList>

@@ -2,10 +2,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '../../store/auth';
 
-import { AppBar, Box, IconButton, Toolbar, Button, Typography, } from '@material-ui/core';
+import { AppBar, Box, Toolbar, Button, Typography, } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+// import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles(theme => ({
   toolbar: {

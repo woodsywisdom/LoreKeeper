@@ -26,8 +26,8 @@ class User(UserMixin, db.Model):
   email = db.Column(db.String(255), nullable = False, unique = True)
   hashed_password = db.Column(db.String(200), nullable = False)
 
-  campaigns = db.relationship('Campaign', backref='user')
-  tags = db.relationship('Tag', order_by='Tag.name')
+  campaigns = db.relationship('Campaign', back_populates='user')
+  tags = db.relationship('Tag', order_by='Tag.name', back_populates='user')
 
   def to_dict(self):
     return {
@@ -64,8 +64,8 @@ class Campaign(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-
-  tags = db.relationship('Tag', order_by='Tag.name', backref='campaign')
+  user = db.relationship('User', back_populates='campaigns')
+  tags = db.relationship('Tag', order_by='Tag.name', back_populates='campaign')
   pins = db.relationship('Pin', order_by='Pin.position', collection_class=ordering_list('position'))
 
 
@@ -108,8 +108,10 @@ class Tag(db.Model):
   category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-  pin = db.relationship('Pin', uselist=False, back_populates='tag')
-  # notes = db.relationship('Note', order_by='Note.created_at', secondary=notes_tags, backref='tags')
+  user = db.relationship('User', back_populates='tags')
+  campaign = db.relationship('Campaign', back_populates='tags')
+  # pin = db.relationship('Pin', uselist=False, backref=backref('tag', useList=False))
+  notes = db.relationship('Note', order_by='Note.created_at', secondary=notes_tags, back_populates='tags')
 
   def to_dict(self):
     return {
@@ -127,7 +129,7 @@ class Note(db.Model):
   content = db.Column(db.String(255), nullable=False)
   created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-  tags = db.relationship('Tag', secondary=notes_tags, backref='notes')
+  tags = db.relationship('Tag', secondary=notes_tags, back_populates='notes')
 
   def to_dict(self):
     return {
@@ -145,7 +147,7 @@ class Pin(db.Model):
   tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
   position = db.Column(db.Integer)
 
-  tag = db.relationship('Tag', back_populates='pin')
+  tag = db.relationship('Tag', backref=backref('pin', uselist=False))
 
   def to_dict(self):
     return {
