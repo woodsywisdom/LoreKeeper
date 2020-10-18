@@ -107,7 +107,6 @@ const Dashboard = (props) => {
       const res = await fetch(`/api/campaigns/${campaignId}`);
       if (res.ok) {
         const data = await res.json();
-        debugger
         dispatch(setCategories(data.categories));
         dispatch(setTags(data.tags));
         const sessions = Object.values(data.tags).filter(tag => tag.category_id === 2);

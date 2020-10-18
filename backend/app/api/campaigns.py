@@ -47,7 +47,7 @@ def add_note(current_campaign_id):
     res = make_response({'errors': ['Note is longer than 255 characters']}, 400)
     return res
 
-  new_note = Note(content=note_content)
+  new_note = Note(campaign_id=current_campaign_id, content=note_content)
   new_tags = []
   for tag_name in new_hashtag_names:
     new_tag = Tag(name=tag_name, campaign_id=current_campaign_id, category_id = 1, user_id=current_user.id)
@@ -121,6 +121,8 @@ def add_campaign():
 @login_required
 def delete_campaign(campaign_id):
   campaign = Campaign.query.get(campaign_id)
+  # tags = Tag.query.filter_by(campaign_id=campaign_id)
+  # notes = Tag.query
   # print(f'!!!!!!!!!{current_user.get_id()}')
   # print(f'!!!!!!!!!{campaign.user_id}')
   # print(f'!!!!!!!!!{int(current_user.get_id()) == campaign.user_id}')

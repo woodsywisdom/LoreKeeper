@@ -33,9 +33,16 @@ const CampaignForm = ({ open }) => {
     setDescription(e.target.value);
   }
 
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e);
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(newCampaign(title, description, currentUserId));
+    setFormOpen(false);
   }
 
   return (
@@ -61,6 +68,7 @@ const CampaignForm = ({ open }) => {
             fullWidth
             multiline
             onChange={changeDescription}
+            onKeyPress={handleEnter}
           />
           <DialogActions>
             <Button onClick={handleSubmit} color="primary">Add Campaign</Button>

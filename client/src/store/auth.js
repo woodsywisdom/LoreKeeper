@@ -18,6 +18,7 @@ export const setUser = user => {
 
 export const login = (username, password) => async (dispatch) => {
   const csrf_token = Cookies.get('XSRF-TOKEN');
+  debugger
   const res = await fetch('/api/session/login/', {
     method: 'post',
     headers: {
@@ -34,12 +35,8 @@ export const login = (username, password) => async (dispatch) => {
 
   if (res.ok && !data['errors']) {
     dispatch(setUser(data));
-    res.data = data;
-  } else {
-    res.errors = data['errors'];
-    // dispatch(registerErrors(data['errors']));
   }
-  return res
+  return data.errors
 }
 
 export const logout = () => async (dispatch) => {

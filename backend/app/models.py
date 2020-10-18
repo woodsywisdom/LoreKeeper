@@ -26,8 +26,8 @@ class User(UserMixin, db.Model):
   email = db.Column(db.String(255), nullable = False, unique = True)
   hashed_password = db.Column(db.String(200), nullable = False)
 
-  campaigns = db.relationship('Campaign', back_populates='user')
-  tags = db.relationship('Tag', order_by='Tag.name', back_populates='user')
+  campaigns = db.relationship('Campaign', cascade="all, delete-orphan", back_populates='user')
+  tags = db.relationship('Tag', cascade="all, delete-orphan", order_by='Tag.name', back_populates='user')
 
   def to_dict(self):
     return {
@@ -65,8 +65,9 @@ class Campaign(db.Model):
   created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
   user = db.relationship('User', back_populates='campaigns')
-  tags = db.relationship('Tag', order_by='Tag.name', back_populates='campaign')
-  pins = db.relationship('Pin', order_by='Pin.position', collection_class=ordering_list('position'))
+  tags = db.relationship('Tag', cascade="all, delete-orphan", order_by='Tag.name', back_populates='campaign')
+  notes = db.relationship('Note',  cascade="all, delete-orphan")
+  pins = db.relationship('Pin', cascade="all, delete-orphan", order_by='Pin.position', collection_class=ordering_list('position'))
 
 
   def to_dict(self):
@@ -127,6 +128,7 @@ class Note(db.Model):
 
   id = db.Column(db.Integer, primary_key=True)
   content = db.Column(db.String(255), nullable=False)
+  campaign_id = db.Column(db.Integer, db.ForeignKey('campaigns.id'), nullable=False)
   created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
   tags = db.relationship('Tag', secondary=notes_tags, back_populates='notes')

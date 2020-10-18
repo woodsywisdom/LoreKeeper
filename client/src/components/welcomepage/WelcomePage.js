@@ -3,6 +3,8 @@ import React from 'react';
 import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import LoginForm from './LoginForm';
+
 
 const useStyles = makeStyles(theme => ({
   welcomeContainer: {
@@ -18,6 +20,7 @@ const WelcomePage = () => {
 
   return (
     <>
+      <LoginForm />
       <Box className={classes.welcomeContainer} >
         <Typography variant='h1' >Welcome!</Typography>
 

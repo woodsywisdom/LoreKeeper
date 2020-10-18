@@ -5,6 +5,8 @@ const SET_CURRENT_SESSION = 'ui/SET_CURRENT_SESSION';
 const SET_PINS = 'ui/SET_PINS';
 const PIN_TAG = 'ui/PIN_TAG';
 const CLEAR_UI = 'ui/CLEAR_UI';
+const OPEN_LOGIN = 'ui/OPEN_LOGIN';
+const CLOSE_LOGIN = 'ui/CLOSE_LOGIN';
 const EDIT_TAG = 'ui/EDIT_TAG';
 
 
@@ -43,6 +45,18 @@ export const setTagToEdit = tag => {
   });
 }
 
+export const openLogin = () => {
+  return ({
+    type: OPEN_LOGIN,
+  });
+}
+
+export const closeLogin = () => {
+  return ({
+    type: CLOSE_LOGIN,
+  });
+}
+
 export const clearUi = () => {
   return ({
     type: CLEAR_UI,
@@ -54,6 +68,7 @@ const defaultState = {
   pinnedTags: [],
   currentCampaign: {},
   tagToEdit: {},
+  loginOpen: false,
 }
 
 export default function uiReducer(state=defaultState, action) {
@@ -74,6 +89,12 @@ export default function uiReducer(state=defaultState, action) {
       return newState;
     case EDIT_TAG:
       newState.tagToEdit = {...action.tag};
+      return newState;
+    case OPEN_LOGIN:
+      newState.loginOpen = true;
+      return newState;
+    case CLOSE_LOGIN:
+      newState.loginOpen = false;
       return newState;
     case CLEAR_UI:
       return defaultState;

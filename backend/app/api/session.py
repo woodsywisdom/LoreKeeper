@@ -20,22 +20,25 @@ def format_user(user):
 
 @session.route('/login/', methods=["POST", ])
 def login():
-  data = MultiDict(request.json)
-  # print(f"data: {data}")
-  form = LoginForm(MultiDict(mapping = data))
-  # print(f"form-data: {form.data}")
+  data = request.json
+  print(f"data: {data}")
+  form = LoginForm(username=data['username'], password=data['password'])
+  print(f"form-data: {form.data}")
   if not data:
+    print(f'no request data')
     return make_response({'errors': ['no request data']}, 400)
   if form.validate():
+    print(f'---------------form validated')
+    print(f"---------------data.username: {data['username']}")
     user = User.query.filter(User.username == data["username"]).first()
-    # print(f"________________user to be logged in: {user}")
+    print(f"________________user to be logged in: {user}")
     if user and user.check_password(data['password']):
       formatted_user = format_user(user)
-      # print(f'********{format_user}')
+      print(f'********{formatted_user}')
       login_user(user)
-      # print('_____user logged in_____')
-      # print(f'*********{format_user}')
-    return formatted_user
+      print('_____user logged in_____')
+      print(f'*********{formatted_user}')
+      return formatted_user
   else:
     res = make_response({ "errors": [form.errors[error][0] for error in form.errors]}, 401)
     return res
@@ -57,5 +60,5 @@ def csrf():
 def currentuser():
   print(f'_______{dir(current_user)}')
   if current_user.is_anonymous:
-    return make_response({ 'errors': ['anonymous user is logged in']} )
+    return make_response({ 'user': dict({}), 'errors': ['anonymous user is logged in']} )
   return make_response({'user': format_user(current_user)})
