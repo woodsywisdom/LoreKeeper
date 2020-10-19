@@ -50,6 +50,9 @@ import WelcomePage from './components/welcomepage/WelcomePage';
 const darkTheme = createMuiTheme({
     palette: {
         type: 'dark',
+        primary: {
+            main: '#9d0a0e',
+        },
     },
 });
 

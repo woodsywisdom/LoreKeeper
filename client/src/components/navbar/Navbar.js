@@ -80,8 +80,8 @@ const Navbar = () => {
           </Box>
           <Box>
             {currentUser.is_authenticated ?
-              <Button onClick={handleLogout}>Logout</Button>
-              : <Button onClick={handleLogin}>Login</Button>
+              <Button variant='outlined' onClick={handleLogout}>Logout</Button>
+              : <Button variant='outlined' onClick={handleLogin}>Login</Button>
             }
           </Box>
         </Toolbar>

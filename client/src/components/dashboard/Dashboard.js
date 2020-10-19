@@ -42,15 +42,19 @@ const useStyles = makeStyles({
     justifyContent: 'center',
   },
   notePad: {
-    height: "100%",
+    height: "209px",
     width: '100%',
     maxWidth: '600px',
+    position: 'fixed',
+    left: '250px',
+  },
+  notepadButtons: {
+    // justifyContents: 'end',
   },
   noteField: {
     width: '100%',
   },
   helpCard: {
-    width: '320px',
   }
 });
 
@@ -165,12 +169,15 @@ const Dashboard = (props) => {
                   value={newNoteContent}
                 />
               </CardContent>
-              <CardActions>
-                <Button onClick={noteSubmit} >Submit</Button>
-                <Button onClick={helpToggle} >{helpOpen ? 'Close Help' : '?'}</Button>
-              </CardActions>
+              <Box display='flex' justifyContent='flex-end' className={classes.notepadButtons}>
+                <CardActions  >
+                  <Button onClick={noteSubmit} variant='contained' color='primary' >Submit</Button>
+                  <Button onClick={helpToggle} >{helpOpen ? 'Close Help' : '?'}</Button>
+                </CardActions>
+
+              </Box>
             </Card>
-            {helpOpen ? <Help /> : <></>}
+            {helpOpen ? <Help className={classes.helpCard} /> : <></>}
           </Box>
         </Box>
       </Box>

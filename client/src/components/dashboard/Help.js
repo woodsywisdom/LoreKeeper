@@ -7,6 +7,8 @@ import { Card, CardContent, Typography } from '@material-ui/core';
 const useStyles = makeStyles({
   helpCard: {
     width: '320px',
+    position: 'fixed',
+    left: '860px',
   }
 });
 
