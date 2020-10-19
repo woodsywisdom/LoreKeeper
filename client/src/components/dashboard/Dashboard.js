@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     paddingTop: '6vh',
   },
   categoryList: {
-    paddingTop: "50px",
+    paddingTop: "64px",
   },
   drawer: {
     width: "250px",

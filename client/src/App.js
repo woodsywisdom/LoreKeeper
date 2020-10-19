@@ -84,7 +84,7 @@ function App() {
     const currentUser = useSelector(state => state.auth)
 
     if (loading) {
-        return <WelcomePage />
+        return '...loading';
     }
 
     return (

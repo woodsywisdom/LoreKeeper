@@ -5,7 +5,7 @@ import { clearCampaigns } from './campaigns';
 import { clearTags } from './tags';
 import { clearNotes } from './notes';
 import { clearUi } from './ui';
-import { setLoginErrors, setSignUpErrors } from './errors';
+import { clearLoginErrors, clearSignUpErrors, setLoginErrors, setSignUpErrors } from './errors';
 
 const SET_USER = 'auth/SET_USER';
 
@@ -18,6 +18,8 @@ export const setUser = user => {
 }
 
 export const login = (username, password) => async (dispatch) => {
+  dispatch(clearLoginErrors());
+  dispatch(clearSignUpErrors());
   const csrf_token = Cookies.get('XSRF-TOKEN');
   const res = await fetch('/api/session/login/', {
     method: 'post',
@@ -41,6 +43,8 @@ export const login = (username, password) => async (dispatch) => {
 }
 
 export const signUp = (username, password, passwordConfirm) => async (dispatch) => {
+  dispatch(clearLoginErrors());
+  dispatch(clearSignUpErrors());
   const csrf_token = Cookies.get('XSRF-TOKEN');
   const res = await fetch('/api/session/signup/', {
     method: 'post',

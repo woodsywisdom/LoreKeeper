@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
     height: "6vh",
     zIndex: theme.zIndex.drawer + 1,
   },
+  logoButton: {
+    cursor: 'pointer',
+  }
 }));
 
 const Navbar = () => {
@@ -51,29 +54,32 @@ const Navbar = () => {
     <>
       <AppBar className={classes.appBar} position='fixed' >
         <Toolbar display='flex' variant="dense" className={classes.toolbar} >
-          <Box onClick={logoClick} >
+          <Box className={classes.logoButton} onClick={logoClick} >
             <Typography variant='button'>LoreKeeper</Typography>
           </Box>
           <Box>
-            <Button onClick={openCampaigns} endIcon={<ExpandMoreIcon />}>
-              { currentCampaign.title ? currentCampaign.title
-                : <Typography variant='button'>Select a Campaign!</Typography>}
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              keepMounted
-              onClose={closeCampaigns}
-              open={!!anchorEl}
-            >
-              {campaigns ? Object.values(campaigns).map((campaign) => (
-                <MenuItem key={campaign.id} value={campaign.id} onClick={campaignClick} >
-                  {campaign.title}
-                </MenuItem>
-              )) : null }
-            </Menu>
+            {currentUser.id ? (
+              <>
+                <Button onClick={openCampaigns} endIcon={<ExpandMoreIcon />}>
+                  {currentCampaign.title ? currentCampaign.title
+                    : <Typography variant='button'>Select a Campaign!</Typography>}
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  keepMounted
+                  onClose={closeCampaigns}
+                  open={!!anchorEl}
+                >
+                  {campaigns ? Object.values(campaigns).map((campaign) => (
+                    <MenuItem key={campaign.id} value={campaign.id} onClick={campaignClick} >
+                      {campaign.title}
+                    </MenuItem>
+                  )) : null}
+                </Menu>
+              </>) : null}
           </Box>
           <Box>
-            { currentUser.is_authenticated ?
+            {currentUser.is_authenticated ?
               <Button onClick={handleLogout}>Logout</Button>
               : <Button onClick={handleLogin}>Login</Button>
             }
