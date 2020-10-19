@@ -36,9 +36,9 @@ const CampaignsPage = (props) => {
     setFormOpen(!formOpen);
   }
 
-  useEffect(() => {
-    dispatch(loadCampaigns(userId));
-  }, [dispatch, userId]);
+  // useEffect(() => {
+  //   dispatch(loadCampaigns(userId));
+  // }, [dispatch, userId]);
 
 
   return (
