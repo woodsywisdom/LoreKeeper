@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Button, ButtonGroup, Dialog, List, ListItem, ListItemText, TextField, Typography } from '@material-ui/core';
 
-import { login } from '../../store/auth';
+import { login, signUp } from '../../store/auth';
 import { closeLogin } from '../../store/ui';
+import { clearLoginErrors, clearSignUpErrors } from '../../store/errors';
 
 const useStyles = makeStyles({
   formContainer: {
@@ -27,6 +28,9 @@ const useStyles = makeStyles({
   },
   inputField: {
     margin: '8px 20px',
+  },
+  errorList: {
+    color: 'red',
   }
 })
 
@@ -35,47 +39,44 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const loginOpen = useSelector(state => state.ui.loginOpen);
-  const [loginErrors, setLoginErrors] = useState([]);
-  const [signUpErrors, setSignUpErrors] = useState([]);
+  const errors = useSelector(state => state.errors);
   const [username1, setUsername1] = useState('');
   const [password1, setPassword1] = useState('');
   const [username2, setUsername2] = useState('');
   const [password2, setPassword2] = useState('');
   const [confirm, setConfirm] = useState('');
 
-  const changeUsername1 = (e) => {
-    setUsername1(e.target.value);
-  }
-
-  const changePassword1 = (e) => {
-    setPassword1(e.target.value);
-  }
-
-  const changeUsername2 = (e) => {
-    setUsername2(e.target.value);
-  }
-
-  const changePassword2 = (e) => {
-    setPassword2(e.target.value);
-  }
-
-  const changeConfirm = (e) => {
-    setConfirm(e.currentTarget.value)
-    // (password2 !== confirm) ? setPasswordMatch(false) : setPasswordMatch(true);
-  }
-
-  const demoLogin = (e) => {
-    dispatch(login('Ian', 'password'));
-  }
-
-  const submitLogin = (e) => {
-    const errors = dispatch(login(username1, password1));
-    if (errors) {
-      setLoginErrors(errors);
+  useEffect(() => {
+    return () => {
+      dispatch(clearLoginErrors());
+      dispatch(clearSignUpErrors());
     }
-  }
+  }, [dispatch]);
+
+  const changeUsername1 = (e) => setUsername1(e.target.value);
+
+  const changePassword1 = (e) => setPassword1(e.target.value);
+
+  const changeUsername2 = (e) => setUsername2(e.target.value);
+
+  const changePassword2 = (e) => setPassword2(e.target.value);
+
+  const changeConfirm = (e) => setConfirm(e.currentTarget.value);
+
+  const demoLogin = (e) => dispatch(login('Ian', 'password'));
+
+  const submitLogin = (e) => dispatch(login(username1, password1));
+
+  const submitSignUp = (e) => dispatch(signUp(username2, password2, confirm));
 
   const handleClose = (e) => {
+    setUsername1('');
+    setPassword1('');
+    setUsername2('');
+    setPassword2('');
+    setConfirm('');
+    dispatch(clearLoginErrors());
+    dispatch(clearSignUpErrors());
     dispatch(closeLogin());
   }
 
@@ -103,10 +104,10 @@ const LoginForm = () => {
               value={password1}
               variant='outlined'
             />
-            {loginErrors ? <List >
-              {loginErrors.map(error => (
+            {errors.login ? <List className={classes.errorList} >
+              {errors.login.map(error => (
                 <ListItem>
-                  <ListItemText>{error.message}</ListItemText>
+                  <ListItemText color='secondary'>{error}</ListItemText>
                 </ListItem>
               ))}
             </List> : null}
@@ -144,7 +145,14 @@ const LoginForm = () => {
               value={confirm}
               variant='outlined'
               />
-            <Button onClick={submitLogin} variant='contained' >Sign Up</Button>
+            {errors.signUp ? <List className={classes.errorList} >
+              {errors.signUp.map(error => (
+                <ListItem>
+                  <ListItemText color='secondary'>{error}</ListItemText>
+                </ListItem>
+              ))}
+            </List> : null}
+            <Button onClick={submitSignUp} variant='contained' color='primary' >Sign Up</Button>
           </Box>
         </Box>
 

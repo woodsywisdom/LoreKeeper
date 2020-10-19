@@ -6,6 +6,7 @@ import categories from './categories';
 import tags from './tags';
 import notes from './notes';
 import ui from './ui';
+import errors from './errors';
 
 const entities = combineReducers({
   campaigns,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   auth,
   entities,
   ui,
+  errors,
 });
 
 let storeEnhancer;

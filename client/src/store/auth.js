@@ -5,6 +5,7 @@ import { clearCampaigns } from './campaigns';
 import { clearTags } from './tags';
 import { clearNotes } from './notes';
 import { clearUi } from './ui';
+import { setLoginErrors, setSignUpErrors } from './errors';
 
 const SET_USER = 'auth/SET_USER';
 
@@ -18,7 +19,6 @@ export const setUser = user => {
 
 export const login = (username, password) => async (dispatch) => {
   const csrf_token = Cookies.get('XSRF-TOKEN');
-  debugger
   const res = await fetch('/api/session/login/', {
     method: 'post',
     headers: {
@@ -28,15 +28,34 @@ export const login = (username, password) => async (dispatch) => {
     body: JSON.stringify({ username, password, 'csrf_token': csrf_token }),
   });
   const data = await res.json();
-  // loads campaigns into their own state and
-  const campaigns = data.campaigns;
-  dispatch(setCampaigns(campaigns));
-  delete data.campaigns;
-
   if (res.ok && !data['errors']) {
     dispatch(setUser(data));
+    if (data.campaigns) {
+      const campaigns = data.campaigns;
+      dispatch(setCampaigns(campaigns));
+      delete data.campaigns;
+    }
+  } else {
+    dispatch(setLoginErrors(data.errors));
   }
-  return data.errors
+}
+
+export const signUp = (username, password, passwordConfirm) => async (dispatch) => {
+  const csrf_token = Cookies.get('XSRF-TOKEN');
+  const res = await fetch('/api/session/signup/', {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFTOKEN': csrf_token
+    },
+    body: JSON.stringify({ username, password, passwordConfirm, 'csrf_token': csrf_token }),
+  });
+  const data = await res.json();
+  if (res.ok && !data['errors']) {
+    dispatch(setUser(data));
+  } else {
+    dispatch(setSignUpErrors(data.errors));
+  }
 }
 
 export const logout = () => async (dispatch) => {

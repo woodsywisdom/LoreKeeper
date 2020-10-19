@@ -8,10 +8,10 @@ class LoginForm(FlaskForm):
   password = PasswordField("password", validators=[DataRequired()])
 
 class SignupForm(FlaskForm):
-  username = StringField("username", validators=[DataRequired(), Length(min=5, message="Username must be at least 5 characters long")])
-  email = StringField("email", validators=[DataRequired(), Email(message="Must contain a valid email address")])
-  password = PasswordField("password", validators=[DataRequired()])
-  passwordConfirm = PasswordField("password", validators=[DataRequired(), EqualTo(password, message="Password fields must match each other")])
+  username = StringField("username", validators=[DataRequired(), Length(min=5, message="Min. 5 characters in username")])
+  # email = StringField("email", validators=[DataRequired(), Email(message="Must contain a valid email address")])
+  password = PasswordField("password", validators=[DataRequired(), EqualTo('password_confirm', message="Passwords must match")])
+  password_confirm = PasswordField("confirm password", )
 
 class CampaignForm(FlaskForm):
   title = StringField('title', validators=[DataRequired(), Length(max=50, message="Title cannot be longer than 50 characters")])

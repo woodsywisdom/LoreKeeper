@@ -8,12 +8,12 @@ with app.app_context():
   db.drop_all()
   db.create_all()
 
-  ian = User(username = 'Ian', email = 'ian@aa.io', password='password')
-  javier = User(username = 'Javier', email = 'javier@aa.io', password='password')
-  dean = User(username = 'Dean', email = 'dean@aa.io', password='password')
-  angela = User(username = 'Angela', email = 'angela@aa.io', password='password')
-  soonmi = User(username = 'Soon-Mi', email = 'soonmi@aa.io', password='password')
-  alissa = User(username = 'Alissa', email = 'alissa@aa.io', password='password')
+  ian = User(username = 'Ian', password='password')
+  javier = User(username = 'Javier', password='password')
+  dean = User(username = 'Dean', password='password')
+  angela = User(username = 'Angela', password='password')
+  soonmi = User(username = 'Soon-Mi', password='password')
+  alissa = User(username = 'Alissa', password='password')
 
   db.session.add(ian)
   db.session.add(javier)
@@ -49,12 +49,14 @@ with app.app_context():
   bob = Tag(name='#boblin', campaign_id=1, category_id=4, user_id=1 )
   tne = Tag(name='#thenaughtyelf', campaign_id=1, category_id=5, user_id=1 )
   tcm = Tag(name='#thechickensmaw', campaign_id=1, category_id=5, user_id=1 )
+  sesh1 = Tag(name='#session-1', campaign_id=2, category_id=2, user_id=1 )
 
   db.session.add(s1)
   db.session.add(ds)
   db.session.add(bob)
   db.session.add(tne)
   db.session.add(tcm)
+  db.session.add(sesh1)
 
   n1 = Note(campaign_id=1, content='#Session-1 #Deathshadow wakes up hungover in #TheNaughtyElf tavern.  He is currently under the poisoned condition')
   n1.tags.append(s1)

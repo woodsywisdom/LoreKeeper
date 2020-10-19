@@ -23,7 +23,7 @@ class User(UserMixin, db.Model):
 
   id = db.Column(db.Integer, primary_key = True)
   username = db.Column(db.String(40), nullable = False, unique = True)
-  email = db.Column(db.String(255), nullable = False, unique = True)
+  # email = db.Column(db.String(255), nullable = False, unique = True)
   hashed_password = db.Column(db.String(200), nullable = False)
 
   campaigns = db.relationship('Campaign', cascade="all, delete-orphan", back_populates='user')
@@ -33,7 +33,6 @@ class User(UserMixin, db.Model):
     return {
       "id": self.id,
       "username": self.username,
-      "email": self.email,
       "campaigns": self.campaigns,
       "is_authenticated": self.is_authenticated,
       "is_active": self.is_active,
