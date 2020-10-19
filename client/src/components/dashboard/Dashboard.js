@@ -45,7 +45,6 @@ const useStyles = makeStyles({
     height: "100%",
     width: '100%',
     maxWidth: '600px',
-    margin: '0px 8px',
   },
   noteField: {
     width: '100%',

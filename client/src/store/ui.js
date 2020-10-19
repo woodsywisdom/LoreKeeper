@@ -4,6 +4,7 @@ const SET_CURRENT_CAMPAIGN = 'ui/SET_CURRENT_CAMPAIGN';
 const SET_CURRENT_SESSION = 'ui/SET_CURRENT_SESSION';
 const SET_PINS = 'ui/SET_PINS';
 const PIN_TAG = 'ui/PIN_TAG';
+const UNPIN_TAG = 'ui/UNPIN_TAG';
 const CLEAR_UI = 'ui/CLEAR_UI';
 const OPEN_LOGIN = 'ui/OPEN_LOGIN';
 const CLOSE_LOGIN = 'ui/CLOSE_LOGIN';
@@ -35,6 +36,13 @@ export const pinTag = tag => {
   return ({
     type: PIN_TAG,
     tag,
+  });
+}
+
+export const unpinTag = position => {
+  return ({
+    type: UNPIN_TAG,
+    position,
   });
 }
 
@@ -84,8 +92,11 @@ export default function uiReducer(state=defaultState, action) {
       newState.pinnedTags = action.pins;
       return newState;
     case PIN_TAG:
-      const newPins = [...newState.pinnedTags, action.tag];
-      newState.pinnedTags = newPins;
+      newState.pinnedTags = [...newState.pinnedTags, action.tag];
+      return newState;
+    case UNPIN_TAG:
+      newState.pinnedTags = [...newState.pinnedTags.slice(0, action.position),
+                            ...newState.pinnedTags.slice(action.position + 1)];
       return newState;
     case EDIT_TAG:
       newState.tagToEdit = {...action.tag};

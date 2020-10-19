@@ -21,7 +21,7 @@ const CorkBoard = () => {
   return (
     <>
       <Box className={classes.corkboard} display='flex'>
-        {pinnedTags.map(tag => <TagNotes tag={tag} />)}
+        {pinnedTags.map((tag, index) => <TagNotes key={index} position={index} tag={tag} />)}
       </Box>
     </>
   );

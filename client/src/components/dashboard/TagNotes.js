@@ -3,10 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FixedSizeList } from 'react-window';
 import PropTypes from 'prop-types';
 
-import { Box, Divider, ListItem, ListItemText, Typography } from '@material-ui/core';
+import { Box, IconButton, ListItem, ListItemText, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { getNotes } from '../../store/notes';
+import { unpinTag } from '../../store/ui';
 
 
 const useStyles = makeStyles(theme => ({
@@ -17,7 +19,18 @@ const useStyles = makeStyles(theme => ({
   pinnedTag: {
     flexDirection: "column",
     alignItems: "center",
+    border: "solid 2px grey",
+    borderRadius: '5px',
+    marginTop: '16px',
+    marginRight: '12px',
   },
+  title: {
+    color: "grey",
+    textDecoration: 'underline',
+  },
+  closeButton: {
+
+  }
 }));
 
 
@@ -42,7 +55,7 @@ renderRow.propTypes = {
 
 
 
-const TagNotes = ({ tag }) => {
+const TagNotes = ({ tag, position }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const notes = useSelector(state => state.entities.notes[tag.name]);
@@ -50,7 +63,7 @@ const TagNotes = ({ tag }) => {
   const [height, setHeight] = useState(100);
 
   const recalcSize = () => {
-    const newHeight = window.innerHeight - 320;
+    const newHeight = window.innerHeight - 350;
     setHeight(newHeight)
   };
 
@@ -61,11 +74,20 @@ const TagNotes = ({ tag }) => {
     window.addEventListener('resize', recalcSize);
   }, [dispatch, tag]);
 
+  const unPin = (e) => dispatch(unpinTag(position));
 
   return (
     <>
       <Box className={classes.pinnedTag} display='flex'>
-        <Typography variant='h5'>{tag.name}</Typography>
+        <Typography
+          className={classes.title}
+          variant='h5'
+        >
+          {tag.name}
+          <IconButton className={classes.closeButton} onClick={unPin} >
+            <CloseIcon />
+          </IconButton>
+        </Typography>
         <FixedSizeList
           height={height}
           width={360}
