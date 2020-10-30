@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Button, Card, CardActions, CardContent, Dialog, Select, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { setTagToEdit } from '../../store/ui';
 import { recategorizeTag } from '../../store/tags';
 
+const useStyles = makeStyles({
+  title: {
+    padding: "16px",
+  }
+})
+
 
 const TagEditForm = () => {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const tagToEdit = useSelector(state => state.ui.tagToEdit);
   const categories = useSelector(state => state.entities.categories)
   // const currentCategory = categories[tagToEdit.category_id - 1];
@@ -41,9 +49,9 @@ const TagEditForm = () => {
     <>
       <Dialog open={tagToEdit.id} onClose={closeForm} >
         <Card >
-          <CardContent>
+          <CardContent display="flex" flexDirections="column" alignItems="center" >
 
-            <Typography variant='h3'>Edit Tag - {tagToEdit.name}</Typography>
+            <Typography className={classes.title} variant='h5'>Edit Tag - {tagToEdit.name}</Typography>
             {/* <TextField
               defaultValue={tagToEdit.name}
               value={newName}

@@ -91,7 +91,7 @@ const TagNotes = ({ tag, position }) => {
         <FixedSizeList
           height={height}
           width={360}
-          itemSize={80}
+          itemSize={100}
           itemCount={notes ? notes.length : 0}
           itemData={notes}
           border

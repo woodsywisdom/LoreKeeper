@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardActions, CardContent, Drawer, List, TextField, Typography } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
+import { Accordion, AccordionDetails, AccordionSummary, Badge, Box, Button, Card, CardActions, CardContent, Drawer, List, TextField, Typography } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import NewReleasesIcon from '@material-ui/icons/NewReleases';
 
 import CategoryTags from './CategoryTags';
 import CorkBoard from './CorkBoard';
 import Help from './Help';
+import TagEditForm from './TagEditForm';
 import { setCategories } from '../../store/categories';
 import { setTags } from '../../store/tags';
 import { createNote } from '../../store/notes';
 import { setCurrentCampaign, setCurrentSession, setPins } from '../../store/ui';
-import TagEditForm from './TagEditForm';
 
 const useStyles = makeStyles({
   dashboardBox: {
@@ -64,6 +65,7 @@ const Dashboard = (props) => {
   const classes = useStyles();
 
   const categories = useSelector(state => state.entities.categories);
+  const newTagNum = categories[0] ? Object.values(categories[0]).length : 0;
   const tags = useSelector(state => state.entities.tags)
   const currentSession = useSelector(state => state.ui.currentSession);
   const [newNoteContent, setNewNoteContent] = useState("");
@@ -130,6 +132,11 @@ const Dashboard = (props) => {
           expandIcon={<ExpandMoreIcon />}
         >
           <Typography>{category.name}</Typography>
+          {/* { (newTagNum && category.id === 1) ? (
+            <Badge badgeContent={newTagNum} color='primary'>
+              <NewReleasesIcon />
+            </Badge>
+          ) : null } */}
         </AccordionSummary>
         <AccordionDetails>
           <CategoryTags catId={category.id} tagIds={category.tags} />
